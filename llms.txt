@@ -1,0 +1,10 @@
+# Mick Lynch's Portfolio
+
+> A portfolio website showcasing the projects and experience of Mick Lynch, a software engineer.
+
+## Main Sections
+
+*   [Home](index.html) - The main landing page.
+*   [Projects](index.html#projects) - A list of projects with descriptions and links.
+*   [Experience](index.html#experience) - A summary of professional experience.
+*   [Contact](index.html#contact) - Contact information.
