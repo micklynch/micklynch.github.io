@@ -229,19 +229,23 @@
             border-color: rgba(59, 130, 246, 0.5);
         }
 
-        .project-image-placeholder {
+        .project-image-placeholder, .project-video-placeholder {
+            position: relative;
             width: 100%;
             height: 180px; /* Fixed height for placeholders */
             background-color: #334155; /* slate-700 */
             border-radius: 6px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #64748b; /* slate-500 */
-            font-size: 0.9rem;
             margin-bottom: 1rem;
-            text-align: center;
-            object-fit: cover; /* Good practice if using actual images */
+            overflow: hidden; /* Ensures the iframe corners are rounded */
+        }
+
+        .project-video-placeholder .project-video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0; /* Remove default iframe border */
         }
 
         .project-card h3 {
@@ -394,7 +398,15 @@
 
                     <!-- Project Card 2: ReferWell (Moved to Top) -->
                     <article class="project-card">
-                        <img src="images/referwell.png" alt="..." class="project-image-placeholder"> 
+                        <div class="project-video-placeholder">
+                            <iframe
+                                src="https://www.youtube.com/embed/f30TH-g13vs"
+                                frameborder="0"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                allowfullscreen
+                                class="project-video">
+                            </iframe>
+                        </div>
                         <h3>ReferWell Open Source</h3>
                         <p>An open-source project designed to streamline the patient referral process between family doctors and specialists, improving coordination of care.</p>
                         <a href="https://medium.com/p/b37f5a6458da" target="_blank" rel="noopener noreferrer" class="project-link glow-hover">Read on Medium</a>
