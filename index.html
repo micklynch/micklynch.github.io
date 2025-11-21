@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,473 +8,503 @@
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Fira+Mono:wght@400;500;700&family=Space+Grotesk:wght@300;500;700&display=swap"
+        rel="stylesheet">
     <!-- Font Awesome for Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+        integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="llm" href="/llm.txt" type="text/markdown">
 
     <style>
         :root {
-            --primary-color: #7dd3fc; /* sky-300 - cyan/blue */
-            --secondary-color: #a78bfa; /* violet-400 - purple */
-            --tertiary-color: #34d399; /* emerald-400 - teal/green */
-            --accent-color: #f0abfc; /* fuchsia-300 - pink/purple */
-            
-            /* Professional grey/white tones for text */
-            --text-color: #e2e8f0; /* slate-200 - main text */
-            --text-heading: #f8fafc; /* slate-50 - headings */
-            --text-muted: #94a3b8; /* slate-400 - muted text */
-            --text-icons: #cbd5e1; /* slate-300 - icons */
-            --text-hover: #ffffff; /* white - hover state */
-            
-            /* Subtle toned-down colors for links */
-            --link-color: #5eead4; /* teal-300 - subtle but visible */
-            --link-hover-color: #ffffff; /* white - link hover */
-            --card-bg: rgba(15, 23, 42, 0.7); /* Very dark blue with alpha */
-            --border-color: rgba(203, 213, 225, 0.2); /* neutral border */
-            --bg-primary: #0f172a; /* slate-900 */
-            --bg-secondary: #1e293b; /* slate-800 */
+            /* Funky Neon Palette */
+            --bg-color: #050505;
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --card-border: rgba(255, 255, 255, 0.1);
+
+            --neon-pink: #ff00ff;
+            --neon-cyan: #00ffff;
+            --neon-yellow: #ffff00;
+            --neon-purple: #bc13fe;
+
+            --text-main: #e0e0e0;
+            --text-muted: #a0a0a0;
+
+            --font-mono: 'Fira Mono', monospace;
+            --font-display: 'Space Grotesk', sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
         }
 
         body {
-            font-family: 'Fira Mono', monospace;
-            background: var(--bg-primary);
-            color: var(--text-color);
+            font-family: var(--font-mono);
+            background-color: var(--bg-color);
+            color: var(--text-main);
             margin: 0;
             padding: 0;
-            line-height: 1.7;
-            font-size: 16px;
+            line-height: 1.6;
             overflow-x: hidden;
-            position: relative;
+            min-height: 100vh;
         }
 
-        /* Animated gradient background */
-        body::before {
-            content: '';
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            width: 300dvmax; /* Use vmax to cover diagonal */
-            height: 300dvmax;
-            transform: translate(-50%, -50%); /* Center the element */
-            transform-origin: center center;
-            background:
-                radial-gradient(circle at 20% 30%, rgba(38, 77, 94, 0.15) 0%, transparent 50%),
-                radial-gradient(circle at 80% 70%, rgba(50, 41, 78, 0.15) 0%, transparent 50%),
-                radial-gradient(circle at 40% 80%, rgba(21, 90, 65, 0.15) 0%, transparent 50%),
-                radial-gradient(circle at 90% 20%, rgba(89, 31, 79, 0.351) 0%, transparent 50%);
-            animation: rotateGradient 20s linear infinite;
-            z-index: -1;
-            pointer-events: none;
-        }
+        /* --- Background Effects --- */
 
-        @keyframes rotateGradient {
-            0% {
-                transform: translate(-50%, -50%) rotate(0deg);
-            }
-            100% {
-                transform: translate(-50%, -50%) rotate(360deg);
-            }
-        }
-
-        /* Code-like grid overlay */
-        body::after {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            width: 100%;
-            height: 100%;
-            background-image:
-                linear-gradient(rgba(125, 211, 252, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(125, 211, 252, 0.03) 1px, transparent 1px);
-            background-size: 20px 20px;
-            z-index: -1;
-            pointer-events: none;
-        }
-
-        /* Noise texture overlay for rustic effect */
+        /* Grainy Noise Overlay */
         .noise-overlay {
             position: fixed;
             top: 0;
             left: 0;
-            right: 0;
-            bottom: 0;
             width: 100%;
             height: 100%;
-            z-index: -1;
             pointer-events: none;
-            opacity: 0.8;
+            z-index: 0;
+            opacity: 0.07;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
         }
 
+        /* Floating Orbs */
+        .orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: -1;
+            animation: float-orb 20s infinite alternate ease-in-out;
+            opacity: 0.4;
+        }
+
+        .orb-1 {
+            width: 400px;
+            height: 400px;
+            background: var(--neon-purple);
+            top: -100px;
+            left: -100px;
+            animation-duration: 25s;
+        }
+
+        .orb-2 {
+            width: 300px;
+            height: 300px;
+            background: var(--neon-cyan);
+            bottom: 10%;
+            right: -50px;
+            animation-duration: 18s;
+            animation-delay: -5s;
+        }
+
+        .orb-3 {
+            width: 250px;
+            height: 250px;
+            background: var(--neon-pink);
+            top: 40%;
+            left: 20%;
+            animation-duration: 22s;
+            animation-delay: -10s;
+        }
+
+        @keyframes float-orb {
+            0% {
+                transform: translate(0, 0) scale(1);
+            }
+
+            100% {
+                transform: translate(50px, 50px) scale(1.1);
+            }
+        }
+
+        /* --- Layout --- */
         .container {
-            max-width: 900px;
+            max-width: 1000px;
             margin: 0 auto;
-            padding: 2rem 1rem; /* Add padding for smaller screens */
+            padding: 2rem;
+            position: relative;
+            z-index: 1;
         }
 
-        /* --- Header Styles --- */
+        /* --- Header --- */
         header {
             text-align: center;
-            margin-bottom: 3rem;
-            padding-top: 2rem;
-            animation: fadeIn 1s ease-out;
+            padding: 4rem 0;
+            animation: slide-down 1s ease-out;
         }
 
-        .profile-pic-container {
-            margin-bottom: 1.5rem;
+        .profile-wrapper {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 2rem;
         }
 
         .profile-pic {
-            width: 150px;
-            height: 150px;
+            width: 180px;
+            height: 180px;
             border-radius: 50%;
-            border: 4px solid #cbd5e1;
-            box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
             object-fit: cover;
-            animation: float 4s ease-in-out infinite;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-12px); }
-        }
-
-
-
-        h1.name {
-            font-size: 2.8rem;
-            margin-bottom: 0.2rem;
-            font-weight: 700;
-            color: var(--text-heading);
-        }
-
-        p.credentials, p.location {
-            font-size: 1.1rem;
-            color: var(--text-muted);
-            margin: 0.1rem 0;
-        }
-
-        .contact-info {
-            margin-top: 1rem;
-            font-size: 1rem;
-        }
-        .contact-info a {
-            color: var(--text-color);
-            text-decoration: none;
-            margin: 0 0.75rem;
-            transition: color 0.3s ease, text-shadow 0.3s ease, opacity 0.3s ease; /* Added opacity transition */
-        }
-        .contact-info a:hover {
-            color: var(--text-hover);
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
-        }
-        .contact-info i {
-            margin-right: 0.4rem;
-            color: #7dd3fc; /* Subtle cyan for icons */
-        }
-        /* Style for the placeholder state */
-        #email-link.loading {
-             opacity: 0.6;
-             cursor: default;
-        }
-
-
-        .social-links {
-            margin-top: 1.5rem;
-            display: flex;
-            justify-content: center;
-            gap: 1.5rem; /* Spacing between icons */
-        }
-
-        .social-links a {
-            font-size: 1.8rem; /* Larger icons */
-            color: #94a3b8; /* Muted grey */
-            text-decoration: none;
-            transition: color 0.3s ease, transform 0.3s ease, text-shadow 0.3s ease;
-        }
-
-        .social-links a:hover {
-            color: #7dd3fc; /* Subtle cyan on hover */
-            transform: translateY(-3px) scale(1.1);
-            text-shadow: 0 0 10px rgba(125, 211, 252, 0.4);
-        }
-
-        /* --- General Styles --- */
-        h2 {
-            font-size: 1.8rem;
-            font-weight: 500;
-            margin-top: 2.5rem;
-            margin-bottom: 1.5rem;
+            border: 3px solid rgba(255, 255, 255, 0.2);
             position: relative;
-            display: inline-block; /* Make underline fit content */
-            padding-bottom: 0.5rem; /* Space for underline */
+            z-index: 2;
+            transition: transform 0.3s ease;
         }
-        /* Underline effect for H2 */
-        h2::after {
+
+        .profile-pic:hover {
+            transform: scale(1.05) rotate(2deg);
+        }
+
+        /* Spinning border effect */
+        .profile-wrapper::before {
             content: '';
             position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 60%; /* Width of the underline */
-            height: 2px; /* Thickness of the underline */
-            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
-            border-radius: 1px;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            bottom: -10px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, var(--neon-pink), var(--neon-cyan), var(--neon-yellow));
+            z-index: 1;
+            animation: spin 4s linear infinite;
+            opacity: 0.7;
+            filter: blur(10px);
         }
 
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
 
-        p {
-            margin-bottom: 1rem;
+            100% {
+                transform: rotate(360deg);
+            }
         }
 
-        a {
-            color: var(--link-color);
-            text-decoration: none;
-            transition: color 0.3s ease, text-shadow 0.3s ease;
-        }
-
-        a.glow-hover:hover {
-            color: var(--text-hover);
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
-        }
-
-       /* --- Utility Classes --- */
-        .gradient-text {
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+        h1.name {
+            font-family: var(--font-display);
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin: 0;
+            background: linear-gradient(to right, #fff, #ccc);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
         }
 
-        .fade-in {
-            animation: fadeIn 1.5s ease-out forwards; /* Use forwards to keep final state */
-            opacity: 0; /* Start invisible */
+        .credentials {
+            color: var(--neon-cyan);
+            font-size: 1.2rem;
+            margin-top: 0.5rem;
+            font-weight: bold;
+            letter-spacing: 1px;
         }
 
-        /* Apply fade-in with delay to sections */
+        .location {
+            color: var(--text-muted);
+            margin-top: 0.5rem;
+        }
+
+        .contact-info {
+            margin-top: 1.5rem;
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .contact-pill {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 0.5rem 1.2rem;
+            border-radius: 50px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-main);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .contact-pill:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--neon-pink);
+            box-shadow: 0 0 15px rgba(255, 0, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .contact-pill i {
+            color: var(--neon-pink);
+        }
+
+        .social-links {
+            margin-top: 2rem;
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+        }
+
+        .social-icon {
+            font-size: 1.8rem;
+            color: var(--text-muted);
+            transition: all 0.3s ease;
+        }
+
+        .social-icon:hover {
+            color: var(--neon-yellow);
+            transform: scale(1.2) rotate(5deg);
+            text-shadow: 0 0 15px var(--neon-yellow);
+        }
+
+        /* --- Sections --- */
         section {
-           opacity: 0; /* Start invisible before animation */
-        }
-        #about { animation-delay: 0.2s; }
-        #projects { animation-delay: 0.4s; }
-
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+            margin-bottom: 6rem;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fade-in-up 1s ease-out forwards;
         }
 
-        .section-divider {
-            height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(125, 211, 252, 0.3), transparent);
-            margin: 3rem auto; /* Center divider */
-            width: 80%;
+        #about {
+            animation-delay: 0.2s;
         }
 
-        /* --- Projects Section --- */
+        #projects {
+            animation-delay: 0.4s;
+        }
+
+        #more-info {
+            animation-delay: 0.6s;
+        }
+
+        @keyframes fade-in-up {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h2 {
+            font-family: var(--font-display);
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            color: #fff;
+            position: relative;
+            display: inline-block;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--neon-cyan), var(--neon-purple));
+            box-shadow: 0 0 10px var(--neon-cyan);
+        }
+
+        /* --- About --- */
+        .about-text {
+            font-size: 1.1rem;
+            color: #ccc;
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 2rem;
+            border-radius: 16px;
+            border: 1px solid var(--card-border);
+            backdrop-filter: blur(5px);
+        }
+
+        .about-text p {
+            margin-bottom: 1.5rem;
+        }
+
+        .highlight-link {
+            color: var(--neon-cyan);
+            text-decoration: none;
+            border-bottom: 1px dashed var(--neon-cyan);
+            transition: all 0.2s;
+        }
+
+        .highlight-link:hover {
+            color: #fff;
+            border-bottom-style: solid;
+            text-shadow: 0 0 8px var(--neon-cyan);
+        }
+
+        /* --- Projects Grid --- */
         .projects-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Responsive grid */
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             gap: 2rem;
         }
 
         .project-card {
             background: var(--card-bg);
-            border-radius: 8px;
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
             padding: 1.5rem;
-            border: 1px solid var(--border-color);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            display: flex; /* Use flexbox for layout */
-            flex-direction: column; /* Stack elements vertically */
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        .project-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 0 25px rgba(125, 211, 252, 0.4);
-            border-color: rgba(125, 211, 252, 0.5);
-        }
-
-        .project-image-placeholder {
-            width: 100%;
-            height: 180px; /* Fixed height for placeholders */
-            background-color: var(--bg-secondary);
-            border-radius: 6px;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--text-muted);
-            font-size: 0.9rem;
-            margin-bottom: 1rem;
-            text-align: center;
-            object-fit: cover; /* Good practice if using actual images */
-        }
-
-        .project-video-placeholder {
+            flex-direction: column;
             position: relative;
-            width: 100%;
-            height: 180px; /* Fixed height for placeholders */
-            background-color: var(--bg-secondary);
-            border-radius: 6px;
-            margin-bottom: 1rem;
-            overflow: hidden; /* Ensures the iframe corners are rounded */
+            overflow: hidden;
+            backdrop-filter: blur(10px);
         }
 
-        .project-video-placeholder .project-video {
+        .project-card::before {
+            content: '';
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--neon-pink), var(--neon-yellow));
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .project-card:hover {
+            transform: translateY(-10px);
+            background: rgba(255, 255, 255, 0.07);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .project-card:hover::before {
+            opacity: 1;
+        }
+
+        .project-media {
+            width: 100%;
+            height: 180px;
+            background: #111;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .project-media img {
+            width: 100%;
             height: 100%;
-            border: 0; /* Remove default iframe border */
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+
+        .project-card:hover .project-media img {
+            transform: scale(1.1);
+        }
+
+        .project-video {
+            width: 100%;
+            height: 100%;
+            border: none;
         }
 
         .project-card h3 {
-            font-size: 1.2rem;
-            font-weight: 500;
-            margin-top: 0; /* Remove default margin */
-            margin-bottom: 0.5rem;
-            color: var(--text-color);
+            font-family: var(--font-display);
+            font-size: 1.4rem;
+            margin: 0 0 0.5rem 0;
+            color: #fff;
         }
 
         .project-card p {
             font-size: 0.95rem;
-            flex-grow: 1; /* Allow description to take available space */
-            margin-bottom: 1rem;
+            color: #aaa;
+            flex-grow: 1;
+            margin-bottom: 1.5rem;
         }
 
-        .project-link {
-            display: inline-block; /* Make it behave like a button */
-            margin-top: auto; /* Push link to the bottom */
-            padding: 0.5rem 1rem;
-            border: 1px solid #7dd3fc;
+        .project-btn {
+            display: inline-block;
+            padding: 0.8rem 1.5rem;
+            background: transparent;
+            border: 1px solid var(--neon-cyan);
+            color: var(--neon-cyan);
+            text-decoration: none;
             border-radius: 4px;
-            color: #7dd3fc; /* Subtle cyan for button text */
             text-align: center;
-            transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
         }
 
-        /* More specific selector to override a.glow-hover:hover */
-        a.project-link:hover {
-            background-color: var(--text-hover);
-            border-color: var(--text-hover);
-            color: var(--bg-primary) !important; /* Dark text on white background */
-            text-shadow: none !important;
-            box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+        .project-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 100%;
+            background: var(--neon-cyan);
+            z-index: -1;
+            transition: width 0.3s ease;
+        }
+
+        .project-btn:hover {
+            color: #000;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.4);
+        }
+
+        .project-btn:hover::before {
+            width: 100%;
         }
 
         /* --- Footer --- */
         footer {
             text-align: center;
-            margin-top: 4rem;
-            padding: 1.5rem 0;
-            font-size: 0.9rem;
+            padding: 3rem 0;
             color: var(--text-muted);
-            border-top: 1px solid rgba(125, 211, 252, 0.1);
+            font-size: 0.9rem;
+            border-top: 1px solid var(--card-border);
+            margin-top: 4rem;
         }
 
-        /* Responsive noise optimization for different display resolutions */
-        @media (max-resolution: 1dppx) {
-            /* Standard displays (1x) - reduce noise intensity */
-            .noise-overlay {
-                opacity: 0.3 !important;
-            }
-        }
-
-        @media (min-resolution: 2dppx) {
-            /* High DPI displays (Retina/2x+) - can handle more noise */
-            .noise-overlay {
-                opacity: 0.6 !important;
-            }
-        }
-
-        @media (min-resolution: 3dppx) {
-            /* Very high DPI displays - optimal noise */
-            .noise-overlay {
-                opacity: 0.7 !important;
-            }
-        }
-
-        /* --- Responsive Adjustments --- */
+        /* --- Responsive --- */
         @media (max-width: 768px) {
             h1.name {
-                font-size: 2.2rem;
+                font-size: 2.5rem;
             }
-            .profile-pic {
-                width: 120px;
-                height: 120px;
+
+            .container {
+                padding: 1rem;
             }
-            h2 {
-                font-size: 1.6rem;
-            }
-            .contact-info {
-                 display: flex;
-                 flex-direction: column;
-                 gap: 0.5rem;
-                 align-items: center; /* Center items when stacked */
-            }
-            .contact-info a {
-                margin: 0;
-            }
+
             .projects-grid {
-                grid-template-columns: 1fr; /* Stack projects on smaller screens */
+                grid-template-columns: 1fr;
             }
-        }
-         @media (max-width: 480px) {
-            body {
-                 font-size: 15px;
-            }
-             h1.name {
-                font-size: 1.9rem;
-            }
-            .profile-pic {
-                width: 100px;
-                height: 100px;
-            }
-             h2 {
-                font-size: 1.4rem;
-            }
-            .social-links {
+
+            .contact-info {
+                flex-direction: column;
+                align-items: center;
                 gap: 1rem;
             }
-             .social-links a {
-                font-size: 1.6rem;
-            }
-             .project-card {
-                 padding: 1rem;
-             }
         }
-
-   </style>
+    </style>
 </head>
+
 <body>
-    <!-- SVG filter for black noise texture -->
-    <svg class="noise-overlay" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-            <filter id="noiseFilter" x="0%" y="0%" width="100%" height="100%">
-                <feTurbulence
-                    type="fractalNoise"
-                    baseFrequency="0.9"
-                    numOctaves="4"
-                    stitchTiles="stitch"/>
-                <feColorMatrix type="saturate" values="0"/>
-                <feComponentTransfer>
-                    <feFuncR type="linear" slope="0.4" intercept="0"/>
-                    <feFuncG type="linear" slope="0.4" intercept="0"/>
-                    <feFuncB type="linear" slope="0.4" intercept="0"/>
-                </feComponentTransfer>
-            </filter>
-        </defs>
-        <rect x="0" y="0" width="100%" height="100%" filter="url(#noiseFilter)" opacity="0.5"/>
-    </svg>
-    
+
+    <!-- Background Elements -->
+    <div class="noise-overlay"></div>
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+
     <div class="container">
         <header>
-            <div class="profile-pic-container">
-                <!-- === PROFILE PICTURE === -->
-                <img src="images/profile.jpg" alt="Michael Lynch Profile Picture" class="profile-pic">
+            <div class="profile-wrapper">
+                <img src="images/profile.jpg" alt="Michael Lynch" class="profile-pic">
             </div>
 
             <h1 class="name">Michael Lynch</h1>
@@ -482,130 +513,173 @@
 
             <div class="contact-info">
                 <!-- Email placeholder -->
-                <a id="email-link" href="#" class="glow-hover loading">
+                <a id="email-link" href="#" class="contact-pill loading">
                     <i class="fas fa-envelope"></i>
-                    <span><!-- Email address loads here --></span>
+                    <span>Loading...</span>
                 </a>
-                <a href="tel:647-914-8723" class="glow-hover"><i class="fas fa-phone"></i> 647-914-8723</a>
+                <a href="tel:647-914-8723" class="contact-pill">
+                    <i class="fas fa-phone"></i> 647-914-8723
+                </a>
             </div>
 
             <div class="social-links">
-                <a href="https://linkedin.com/in/michaellynchphd" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn Profile"><i class="fab fa-linkedin"></i></a>
-                <a href="https://github.com/micklynch/" target="_blank" rel="noopener noreferrer" aria-label="GitHub Profile"><i class="fab fa-github"></i></a>
-                <a href="https://scholar.google.ca/citations?user=Mgdx1_QAAAAJ" target="_blank" rel="noopener noreferrer" aria-label="Google Scholar Profile"><i class="fas fa-graduation-cap"></i></a>
-                <a href="https://medium.com/@micklynch_6905" target="_blank" rel="noopener noreferrer" aria-label="Medium Profile"><i class="fab fa-medium"></i></a>
+                <a href="https://linkedin.com/in/michaellynchphd" target="_blank" class="social-icon"><i
+                        class="fab fa-linkedin"></i></a>
+                <a href="https://github.com/micklynch/" target="_blank" class="social-icon"><i
+                        class="fab fa-github"></i></a>
+                <a href="https://scholar.google.ca/citations?user=Mgdx1_QAAAAJ" target="_blank" class="social-icon"><i
+                        class="fas fa-graduation-cap"></i></a>
+                <a href="https://medium.com/@micklynch_6905" target="_blank" class="social-icon"><i
+                        class="fab fa-medium"></i></a>
             </div>
         </header>
 
         <main>
-            <section id="about" class="fade-in">
+            <section id="about">
                 <h2>About Me</h2>
-                <p>
-                    Hey, I'm Michael <img src="images/blob-wave.gif" width="25" alt="waving hand"/> — a product manager who's spent close to two decades building and launching tech that actually makes a difference. Mostly, I focus on AI in healthcare — getting smart solutions into the hands of patients (millions of them, in fact) and clinicial teams.
-                </p>
-                <p>
-                    I’ve led transformations, started a company, and still love the nerdy side of things enough to teach and contribute to open-source projects. My early graduate work was all about building data sets to train computers to do human-like tasks — a foundation that still shapes how I think about AI today.
-                </p>
-                <p>
-                    If you’re into AI, healthcare, or just a good chat about where the two meet, you can <a href="https://calendly.com/mick-lynch/30min" target="_blank" rel="noopener noreferrer" class="glow-hover">grab some time with me here</a>.
-                </p>
-                <p>
-                    More of the career details live over on <a href="https://linkedin.com/in/michaellynchphd" target="_blank" rel="noopener noreferrer" class="glow-hover">LinkedIn</a>.
-                </p>
+                <div class="about-text">
+                    <p>
+                        Hey, I'm Michael <img src="images/blob-wave.gif" width="25" alt="waving hand"
+                            style="vertical-align: middle;" /> — a product manager who's spent close to two decades
+                        building and launching tech that actually makes a difference. Mostly, I focus on AI in
+                        healthcare — getting smart solutions into the hands of patients (millions of them, in fact) and
+                        clinicial teams.
+                    </p>
+                    <p>
+                        I’ve led transformations, started a company, and still love the nerdy side of things enough to
+                        teach and contribute to open-source projects. My early graduate work was all about building data
+                        sets to train computers to do human-like tasks — a foundation that still shapes how I think
+                        about AI today.
+                    </p>
+                    <p>
+                        If you’re into AI, healthcare, or just a good chat about where the two meet, you can <a
+                            href="https://calendly.com/mick-lynch/30min" target="_blank" class="highlight-link">grab
+                            some time with me here</a>.
+                    </p>
+                    <p>
+                        More of the career details live over on <a href="https://linkedin.com/in/michaellynchphd"
+                            target="_blank" class="highlight-link">LinkedIn</a>.
+                    </p>
+                </div>
             </section>
 
-            <div class="section-divider"></div>
-
-            <section id="projects" class="fade-in">
+            <section id="projects">
                 <h2>Projects & Contributions</h2>
                 <div class="projects-grid">
 
-                    <!-- Project Card 1: The Healthcare Agents Collective -->
+                    <!-- Project Card 1 -->
                     <article class="project-card">
-                        <img src="images/thac_image.png" alt="The Healthcare Agents Collective" class="project-image-placeholder">
+                        <div class="project-media">
+                            <img src="images/thac_image.png" alt="The Healthcare Agents Collective">
+                        </div>
                         <h3>The Healthcare Agents Collective</h3>
-                        <p>A coordinated team of AI agents working together using Google's A2A protocol - featuring Orchestration, Triage, and FHIR agents that collaborate autonomously to deliver better patient care.</p>
-                        <a href="https://github.com/micklynch/health-agents-collective" target="_blank" rel="noopener noreferrer" class="project-link glow-hover">Link to GitHub</a>
-                    </article>
-                    
-                    <!-- Project Card 2: Hapi-MCP (Moved to Top) -->
-                    <article class="project-card">
-                        <img src="images/hapi-mcp.png" alt="..." class="project-image-placeholder"> 
-                        <h3>MCP Server for FHIR</h3>
-                        <p>I built an MCP server where a user can query the FHIR server in natural language - e.g "give me the list of patients called John Smith over age 55 taking diphenhydramine".</p>
-                        <a href="https://github.com/micklynch/hapi-mcp" target="_blank" rel="noopener noreferrer" class="project-link glow-hover">Link to GitHub</a>
+                        <p>A coordinated team of AI agents working together using Google's A2A protocol - featuring
+                            Orchestration, Triage, and FHIR agents that collaborate autonomously.</p>
+                        <a href="https://github.com/micklynch/health-agents-collective" target="_blank"
+                            class="project-btn">View on GitHub</a>
                     </article>
 
-                    <!-- Project Card 3: ReferWell (Moved to Top) -->
+                    <!-- Project Card 2 -->
                     <article class="project-card">
-                        <div class="project-video-placeholder">
-                            <iframe
-                                src="https://www.youtube.com/embed/f30TH-g13vs"
-                                frameborder="0"
-                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                allowfullscreen
-                                class="project-video">
-                            </iframe>
+                        <div class="project-media">
+                            <img src="images/hapi-mcp.png" alt="MCP Server">
+                        </div>
+                        <h3>MCP Server for FHIR</h3>
+                        <p>I built an MCP server where a user can query the FHIR server in natural language - e.g "give
+                            me the list of patients called John Smith over age 55".</p>
+                        <a href="https://github.com/micklynch/hapi-mcp" target="_blank" class="project-btn">View on
+                            GitHub</a>
+                    </article>
+
+                    <!-- Project Card 3 -->
+                    <article class="project-card">
+                        <div class="project-media">
+                            <iframe src="https://www.youtube.com/embed/f30TH-g13vs" class="project-video"
+                                allowfullscreen></iframe>
                         </div>
                         <h3>ReferWell Open Source</h3>
-                        <p>An open-source project designed to streamline the patient referral process between family doctors and specialists, improving coordination of care.</p>
-                        <a href="https://medium.com/p/b37f5a6458da" target="_blank" rel="noopener noreferrer" class="project-link glow-hover">Read on Medium</a>
+                        <p>An open-source project designed to streamline the patient referral process between family
+                            doctors and specialists, improving coordination of care.</p>
+                        <a href="https://medium.com/p/b37f5a6458da" target="_blank" class="project-btn">Read on
+                            Medium</a>
                     </article>
 
-                    <!-- Project Card 4: HospitalGPT -->
+                    <!-- Project Card 4 -->
                     <article class="project-card">
-                        <img src="images/hospitalgpt.png" alt="..." class="project-image-placeholder">
+                        <div class="project-media">
+                            <img src="images/hospitalgpt.png" alt="HospitalGPT">
+                        </div>
                         <h3>HospitalGPT</h3>
-                        <p>An exploration using AI Agents (Autogen, GPT-4, Mixtral) to manage simulated patient populations, demonstrating potential AI applications in healthcare administration.</p>
-                        <a href="https://medium.com/@micklynch_6905/hospitalgpt-managing-a-patient-population-with-autogen-powered-by-gpt-4-mixtral-8x7b-ef9f54f275f1" target="_blank" rel="noopener noreferrer" class="project-link glow-hover">Read on Medium</a>
+                        <p>An exploration using AI Agents (Autogen, GPT-4, Mixtral) to manage simulated patient
+                            populations, demonstrating potential AI applications in healthcare.</p>
+                        <a href="https://medium.com/@micklynch_6905/hospitalgpt-managing-a-patient-population-with-autogen-powered-by-gpt-4-mixtral-8x7b-ef9f54f275f1"
+                            target="_blank" class="project-btn">Read on Medium</a>
                     </article>
 
-                    <!-- Project Card 5: FibrosisNet / COVIDNet -->
-                     <article class="project-card">
-                        <img src="images/fibrosisnet.png" alt="..." class="project-image-placeholder">
-                        <h3>AI for Medical Imaging (DarwinAI)</h3>
-                        <p>Co-developed FibrosisNet for predicting pulmonary fibrosis and led the deployment of COVIDNet for COVID-19 detection in collaboration with top pharma and hospitals like Boston Children's.</p>
-                        <a href="https://arxiv.org/abs/2103.04008" target="_blank" rel="noopener noreferrer" class="project-link glow-hover">FibrosisNet Paper</a>
-                        <!-- Add another link for COVIDNet if desired, maybe to DarwinAI's site -->
-                    </article>
-
-                     <!-- Project Card 6: Privata.ai / Patient Data Network -->
+                    <!-- Project Card 5 -->
                     <article class="project-card">
-                        <img src="images/patientdatanetwork.png" alt="..." class="project-image-placeholder">                         
+                        <div class="project-media">
+                            <img src="images/fibrosisnet.png" alt="FibrosisNet">
+                        </div>
+                        <h3>AI for Medical Imaging</h3>
+                        <p>Co-developed FibrosisNet for predicting pulmonary fibrosis and led the deployment of COVIDNet
+                            for COVID-19 detection in collaboration with top pharma.</p>
+                        <a href="https://arxiv.org/abs/2103.04008" target="_blank" class="project-btn">Read Paper</a>
+                    </article>
+
+                    <!-- Project Card 6 -->
+                    <article class="project-card">
+                        <div class="project-media">
+                            <img src="images/patientdatanetwork.png" alt="Privata.ai">
+                        </div>
                         <h3>Privata.ai & Patient Data Network</h3>
-                        <p>Co-founded a startup building a SaaS platform for internal data breach detection, based on my open-source Patient Data Network project focused on secure patient data sharing.</p>
-                         <a href="https://medium.com/@micklynch_6905/the-patient-data-network-project-ef84a3d13781" target="_blank" rel="noopener noreferrer" class="project-link glow-hover">Patient Data Network (Medium)</a>
+                        <p>Co-founded a startup building a SaaS platform for internal data breach detection, based on my
+                            open-source Patient Data Network project.</p>
+                        <a href="https://medium.com/@micklynch_6905/the-patient-data-network-project-ef84a3d13781"
+                            target="_blank" class="project-btn">Read on Medium</a>
                     </article>
-                    <!-- Project Card 7: Providence AI Products -->
+
+                    <!-- Project Card 7 -->
                     <article class="project-card">
-                        <img src="images/providence.png" alt="..." class="project-image-placeholder">
+                        <div class="project-media">
+                            <img src="images/providence.png" alt="Providence">
+                        </div>
                         <h3>AI Products at Providence</h3>
-                        <p>Led AI product initiatives impacting millions patients, focusing on reducing clinical workload and enhancing patient engagement. Drove significant user growth and operationalized product strategy.</p>
-                         <!-- No direct public link, maybe link to Providence DIG? -->
-                        <a href="https://providence-4site.org/" target="_blank" rel="noopener noreferrer" class="project-link glow-hover">Learn About Providence DIG</a>
+                        <p>Led AI product initiatives impacting millions patients, focusing on reducing clinical
+                            workload and enhancing patient engagement.</p>
+                        <a href="https://providence-4site.org/" target="_blank" class="project-btn">Learn More</a>
                     </article>
-                    <!-- Project Card 8: OpenMRS SDK -->
+
+                    <!-- Project Card 8 -->
                     <article class="project-card">
-                      <img src="images/privataai.png" alt="..." class="project-image-placeholder">
+                        <div class="project-media">
+                            <img src="images/privataai.png" alt="OpenMRS SDK">
+                        </div>
                         <h3>OpenMRS Java SDK</h3>
-                        <p>Developed an SDK to integrate the open-source Electronic Medical Record system OpenMRS with the Privata.ai platform, facilitating secure data interaction.</p>
-                        <a href="https://github.com/Privata-ai/privata-java-sdk" target="_blank" rel="noopener noreferrer" class="project-link glow-hover">View on GitHub</a>
-                     </article>
+                        <p>Developed an SDK to integrate the open-source Electronic Medical Record system OpenMRS with
+                            the Privata.ai platform.</p>
+                        <a href="https://github.com/Privata-ai/privata-java-sdk" target="_blank"
+                            class="project-btn">View on GitHub</a>
+                    </article>
 
                 </div>
             </section>
 
-             <div class="section-divider"></div>
-
-             <section id="more-info" class="fade-in">
-                 <h2>More Information</h2>
-                 <p>
-                     You can find my publications on <a href="https://scholar.google.ca/citations?user=Mgdx1_QAAAAJ" target="_blank" rel="noopener noreferrer" class="glow-hover">Google Scholar</a>,
-                     explore my code repositories on <a href="https://github.com/micklynch/" target="_blank" rel="noopener noreferrer" class="glow-hover">GitHub</a>,
-                     read my articles on <a href="https://medium.com/@micklynch_6905" target="_blank" rel="noopener noreferrer" class="glow-hover">Medium</a>,
-                     or view my full professional history on <a href="https://linkedin.com/in/michaellynchphd" target="_blank" rel="noopener noreferrer" class="glow-hover">LinkedIn</a>.
-                 </p>
-             </section>
+            <section id="more-info">
+                <h2>More Information</h2>
+                <div class="about-text" style="text-align: center;">
+                    <p>
+                        You can find my publications on <a href="https://scholar.google.ca/citations?user=Mgdx1_QAAAAJ"
+                            target="_blank" class="highlight-link">Google Scholar</a>,
+                        explore my code repositories on <a href="https://github.com/micklynch/" target="_blank"
+                            class="highlight-link">GitHub</a>,
+                        read my articles on <a href="https://medium.com/@micklynch_6905" target="_blank"
+                            class="highlight-link">Medium</a>,
+                        or view my full professional history on <a href="https://linkedin.com/in/michaellynchphd"
+                            target="_blank" class="highlight-link">LinkedIn</a>.
+                    </p>
+                </div>
+            </section>
 
         </main>
 
@@ -615,41 +689,26 @@
     </div>
 
     <script>
-        // Simple script to update the year in the footer
         document.getElementById('current-year').textContent = new Date().getFullYear();
 
-        // --- Email Obfuscation ---
         function revealEmail() {
-            // Define email parts
             const user = "michael.lynch";
             const domain = "outlook";
             const tld = "com";
-
-            // Construct the email address and mailto link
             const email = user + "@" + domain + "." + tld;
             const mailto = "mailto:" + email;
-
-            // Find the placeholder link
             const emailLink = document.getElementById('email-link');
             const emailSpan = emailLink ? emailLink.querySelector('span') : null;
 
             if (emailLink && emailSpan) {
-                // Update the link's href
                 emailLink.href = mailto;
-                // Update the displayed text inside the span
                 emailSpan.textContent = email;
-                // Remove the loading class for visual feedback
                 emailLink.classList.remove('loading');
-                // Optional: Add a title attribute for tooltip on hover
                 emailLink.title = "Send email to " + email;
             }
         }
-
-        // Run the revealEmail function after the page content has loaded
         document.addEventListener('DOMContentLoaded', revealEmail);
-        // --- End Email Obfuscation ---
-
     </script>
 </body>
-</html>
 
+</html>
