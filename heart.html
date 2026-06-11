@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Beating Heart — 3D Model</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<style>
+  :root{
+    --ink:#e8e3dc; --dim:#8d8478; --bg:#0d0c0b;
+    --panel:rgba(22,20,18,0.82); --accent:#c44536;
+    --line:rgba(232,227,220,0.14);
+    --mono:"SF Mono",ui-monospace,Menlo,Consolas,monospace;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--ink);
+    font-family:Georgia,'Times New Roman',serif;}
+  #scene{position:fixed;inset:0;cursor:grab}
+  #scene:active{cursor:grabbing}
+  header{position:fixed;top:0;left:0;right:0;padding:18px 22px;display:flex;
+    justify-content:space-between;align-items:baseline;pointer-events:none;z-index:5}
+  header h1{font-size:19px;font-weight:normal;font-style:italic;letter-spacing:.02em}
+  header .lat{font-family:var(--mono);font-size:10px;color:var(--dim);
+    text-transform:uppercase;letter-spacing:.18em}
+  #ecgwrap{position:fixed;left:0;right:0;bottom:148px;height:54px;pointer-events:none;
+    z-index:4;opacity:.9}
+  #ecg{width:100%;height:100%;display:block}
+  #panel{position:fixed;left:50%;bottom:0;transform:translateX(-50%);
+    width:min(720px,100%);background:var(--panel);backdrop-filter:blur(10px);
+    border-top:1px solid var(--line);border-left:1px solid var(--line);
+    border-right:1px solid var(--line);border-radius:10px 10px 0 0;
+    padding:12px 20px 14px;display:flex;flex-direction:column;gap:10px;z-index:6}
+  .row{display:flex;gap:22px;align-items:center;flex-wrap:wrap}
+  .ctl{display:flex;flex-direction:column;gap:5px;min-width:120px;flex:1}
+  .ctl label{font-family:var(--mono);font-size:9px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--dim)}
+  .ctl .val{font-size:15px}
+  .ctl .val b{color:var(--accent);font-weight:normal;font-style:italic}
+  input[type=range]{-webkit-appearance:none;width:100%;height:2px;
+    background:var(--line);outline:none;border-radius:2px}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;height:13px;
+    border-radius:50%;background:var(--accent);cursor:pointer;border:2px solid var(--bg)}
+  input[type=range]::-moz-range-thumb{width:13px;height:13px;border-radius:50%;
+    background:var(--accent);cursor:pointer;border:2px solid var(--bg)}
+  input[type=range]:disabled{opacity:.35}
+  button{font-family:var(--mono);font-size:10px;letter-spacing:.14em;
+    text-transform:uppercase;background:transparent;color:var(--ink);
+    border:1px solid var(--line);border-radius:5px;padding:8px 12px;cursor:pointer;
+    transition:border-color .2s,color .2s}
+  button:hover{border-color:var(--accent);color:var(--accent)}
+  button.active{background:var(--accent);border-color:var(--accent);color:#fff}
+  button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  .btngroup{display:flex;gap:6px}
+  #hint{position:fixed;top:64px;left:22px;font-family:var(--mono);font-size:10px;
+    color:var(--dim);letter-spacing:.08em;line-height:1.9;z-index:5;pointer-events:none}
+  .tag{position:fixed;font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;
+    text-transform:uppercase;color:var(--ink);pointer-events:none;z-index:3;
+    transform:translate(-50%,-50%);white-space:nowrap;opacity:0;transition:opacity .3s}
+  .tag::after{content:"";display:block;width:26px;height:1px;background:var(--accent);
+    margin:3px auto 0}
+  body.labels-on .tag{opacity:.85}
+  @media (max-width:560px){
+    .row{gap:12px}
+    .ctl{min-width:90px}
+    #hint{display:none}
+    #ecgwrap{bottom:196px}
+  }
+</style>
+</head>
+<body class="labels-on">
+
+<header>
+  <h1>The Human Heart</h1>
+  <div class="lat">cor &middot; in motu</div>
+</header>
+
+<div id="hint">drag &mdash; rotate<br>scroll / pinch &mdash; zoom<br>right-drag &mdash; pan</div>
+<div id="scene"></div>
+
+<div class="tag" id="tag-ao">Aorta</div>
+<div class="tag" id="tag-pa">Pulmonary trunk</div>
+<div class="tag" id="tag-ra">Right atrium</div>
+<div class="tag" id="tag-la">Left atrium</div>
+<div class="tag" id="tag-rv">Right ventricle</div>
+<div class="tag" id="tag-lv">Left ventricle</div>
+<div class="tag" id="tag-svc">Superior vena cava</div>
+<div class="tag" id="tag-lad">Left anterior descending a.</div>
+
+<div id="ecgwrap"><canvas id="ecg"></canvas></div>
+
+<div id="panel">
+  <div class="row">
+    <div class="ctl">
+      <label>Heart rate</label>
+      <div class="val"><b id="bpmVal">72</b> bpm</div>
+      <input type="range" id="bpm" min="40" max="180" value="72" aria-label="Heart rate in beats per minute">
+    </div>
+    <div class="ctl">
+      <label>Contraction</label>
+      <div class="val"><b id="ampVal">100</b>%</div>
+      <input type="range" id="amp" min="0" max="150" value="100" aria-label="Contraction strength">
+    </div>
+    <div class="ctl" style="flex-direction:row;align-items:flex-end;gap:8px;min-width:auto">
+      <button id="btnPause" class="active" aria-pressed="true">Beating</button>
+      <button id="btnLabels" class="active" aria-pressed="true">Labels</button>
+      <button id="btnSpin">Auto-spin</button>
+    </div>
+  </div>
+  <div class="row">
+    <div class="ctl" style="flex:0 0 auto;min-width:auto">
+      <label>Cross-section</label>
+      <div class="btngroup">
+        <button id="sliceOff" class="active">Off</button>
+        <button id="sliceFront">Frontal</button>
+        <button id="sliceSide">Sagittal</button>
+        <button id="sliceTop">Axial</button>
+      </div>
+    </div>
+    <div class="ctl">
+      <label>Slice depth</label>
+      <div class="val"><b id="depthVal">0.0</b></div>
+      <input type="range" id="depth" min="-250" max="250" value="0" disabled aria-label="Slice plane depth">
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+"use strict";
+const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ================= renderer ================= */
+const container = document.getElementById('scene');
+const renderer = new THREE.WebGLRenderer({antialias:true, alpha:true});
+renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+renderer.setSize(innerWidth, innerHeight);
+renderer.outputEncoding = THREE.sRGBEncoding;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.18;
+renderer.localClippingEnabled = true;
+container.appendChild(renderer.domElement);
+
+const scene = new THREE.Scene();
+scene.fog = new THREE.FogExp2(0x0d0c0b, 0.04);
+const camera = new THREE.PerspectiveCamera(38, innerWidth/innerHeight, 0.1, 100);
+
+/* lighting — wet-specimen studio setup */
+scene.add(new THREE.HemisphereLight(0x8a93a8, 0x2a1714, 0.55));
+const key = new THREE.DirectionalLight(0xffe2c4, 1.45); key.position.set(4.5,6,5); scene.add(key);
+const rim = new THREE.DirectionalLight(0x6d84b8, 1.0);  rim.position.set(-5.5,2.5,-4); scene.add(rim);
+const under = new THREE.DirectionalLight(0x402020, 0.4); under.position.set(0,-5,2); scene.add(under);
+const fill = new THREE.PointLight(0xc44536, 0.45, 18); fill.position.set(0,-1.5,4.5); scene.add(fill);
+const glint = new THREE.PointLight(0xffffff, 0.55, 14); glint.position.set(2.5,2.5,5.5); scene.add(glint);
+
+/* ================= clipping plane (cross-section) ================= */
+const clipPlane = new THREE.Plane(new THREE.Vector3(0,0,-1), 1e6); // inactive when constant is huge
+let sliceMode = 'off', sliceDepth = 0;
+const sliceNormals = {
+  front: new THREE.Vector3(0,0,-1),  // cuts away the front, look in along +z
+  side:  new THREE.Vector3(-1,0,0),  // cuts away the right side
+  top:   new THREE.Vector3(0,-1,0),  // cuts away the top
+};
+function applySlice(){
+  if(sliceMode === 'off'){ clipPlane.constant = 1e6; return; }
+  clipPlane.normal.copy(sliceNormals[sliceMode]);
+  clipPlane.constant = sliceDepth;
+}
+
+/* ================= cheap smooth noise ================= */
+function n3(x,y,z){
+  return ( Math.sin(x*1.7 + Math.sin(y*2.3 + 0.7))
+         + Math.sin(y*1.9 + Math.sin(z*2.1 + 1.3))
+         + Math.sin(z*1.3 + Math.sin(x*2.7 + 2.1)) ) / 3;
+}
+
+/* ================= procedural textures ================= */
+function makeCanvas(fn, size){
+  const c = document.createElement('canvas'); c.width = c.height = size||512;
+  fn(c.getContext('2d'), c.width, c.height);
+  const t = new THREE.CanvasTexture(c);
+  t.wrapS = t.wrapT = THREE.RepeatWrapping;
+  return t;
+}
+let R = 1; function rnd(){ R = (R*16807) % 2147483647; return R/2147483647; }
+
+const myoMap = makeCanvas((g,w,h)=>{
+  g.fillStyle = '#8c2f26'; g.fillRect(0,0,w,h);
+  for(let i=0;i<900;i++){
+    const x=rnd()*w, y=rnd()*h, r=6+rnd()*26;
+    const grad = g.createRadialGradient(x,y,0,x,y,r);
+    const warm = rnd()>0.5;
+    grad.addColorStop(0, warm?'rgba(176,72,56,0.16)':'rgba(96,26,22,0.18)');
+    grad.addColorStop(1,'rgba(0,0,0,0)');
+    g.fillStyle = grad; g.beginPath(); g.arc(x,y,r,0,7); g.fill();
+  }
+  g.lineWidth = 1;
+  for(let i=0;i<420;i++){
+    const x=rnd()*w, y=rnd()*h, len=24+rnd()*60, ang=(-0.5+rnd()*0.35);
+    g.strokeStyle = rnd()>0.5?'rgba(60,14,12,0.22)':'rgba(190,90,72,0.14)';
+    g.beginPath(); g.moveTo(x,y);
+    g.quadraticCurveTo(x+Math.cos(ang)*len*0.5, y+Math.sin(ang)*len*0.5+6*rnd(),
+                       x+Math.cos(ang)*len, y+Math.sin(ang)*len);
+    g.stroke();
+  }
+  for(let i=0;i<2600;i++){
+    g.fillStyle = rnd()>0.6?'rgba(220,130,110,0.10)':'rgba(50,10,10,0.12)';
+    g.fillRect(rnd()*w, rnd()*h, 1.4, 1.4);
+  }
+});
+const myoBump = makeCanvas((g,w,h)=>{
+  g.fillStyle = '#808080'; g.fillRect(0,0,w,h);
+  for(let i=0;i<500;i++){
+    const x=rnd()*w, y=rnd()*h, len=20+rnd()*55, ang=(-0.5+rnd()*0.4);
+    g.strokeStyle = rnd()>0.5?'rgba(255,255,255,0.10)':'rgba(0,0,0,0.12)';
+    g.lineWidth = 1+rnd()*2;
+    g.beginPath(); g.moveTo(x,y);
+    g.lineTo(x+Math.cos(ang)*len, y+Math.sin(ang)*len); g.stroke();
+  }
+  for(let i=0;i<2000;i++){
+    g.fillStyle = rnd()>0.5?'rgba(255,255,255,0.07)':'rgba(0,0,0,0.08)';
+    const s=1+rnd()*3; g.fillRect(rnd()*w, rnd()*h, s, s);
+  }
+});
+/* endocardium: darker, ridged — trabeculae carneae */
+const endoMap = makeCanvas((g,w,h)=>{
+  g.fillStyle = '#5e1b17'; g.fillRect(0,0,w,h);
+  for(let i=0;i<320;i++){ // ridges
+    const x=rnd()*w, y=rnd()*h, len=30+rnd()*80, ang=rnd()*Math.PI;
+    g.strokeStyle = rnd()>0.5?'rgba(150,60,48,0.25)':'rgba(30,6,6,0.3)';
+    g.lineWidth = 2+rnd()*4;
+    g.beginPath(); g.moveTo(x,y);
+    g.quadraticCurveTo(x+Math.cos(ang+0.4)*len*0.5, y+Math.sin(ang+0.4)*len*0.5,
+                       x+Math.cos(ang)*len, y+Math.sin(ang)*len);
+    g.stroke();
+  }
+  for(let i=0;i<1200;i++){
+    g.fillStyle='rgba(180,90,75,0.08)'; g.fillRect(rnd()*w,rnd()*h,2,2);
+  }
+});
+const endoBump = makeCanvas((g,w,h)=>{
+  g.fillStyle='#808080'; g.fillRect(0,0,w,h);
+  for(let i=0;i<380;i++){
+    const x=rnd()*w, y=rnd()*h, len=30+rnd()*70, ang=rnd()*Math.PI;
+    g.strokeStyle = rnd()>0.5?'rgba(255,255,255,0.22)':'rgba(0,0,0,0.25)';
+    g.lineWidth = 2+rnd()*4;
+    g.beginPath(); g.moveTo(x,y);
+    g.lineTo(x+Math.cos(ang)*len, y+Math.sin(ang)*len); g.stroke();
+  }
+});
+const vesMap = makeCanvas((g,w,h)=>{
+  g.fillStyle = '#b0584a'; g.fillRect(0,0,w,h);
+  for(let i=0;i<240;i++){
+    const x=rnd()*w; g.strokeStyle = rnd()>0.5?'rgba(220,140,120,0.10)':'rgba(90,30,26,0.12)';
+    g.lineWidth = 1+rnd()*3;
+    g.beginPath(); g.moveTo(x,0); g.bezierCurveTo(x+12*rnd()-6,h*0.33,x+12*rnd()-6,h*0.66,x,h); g.stroke();
+  }
+  for(let i=0;i<1200;i++){
+    g.fillStyle='rgba(255,225,210,0.05)'; g.fillRect(rnd()*w,rnd()*h,1.5,1.5);
+  }
+});
+const vesBump = makeCanvas((g,w,h)=>{
+  g.fillStyle='#808080'; g.fillRect(0,0,w,h);
+  for(let i=0;i<260;i++){
+    const x=rnd()*w; g.strokeStyle = rnd()>0.5?'rgba(255,255,255,0.08)':'rgba(0,0,0,0.09)';
+    g.lineWidth=1+rnd()*2;
+    g.beginPath(); g.moveTo(x,0); g.lineTo(x+8*rnd()-4,h); g.stroke();
+  }
+});
+const fatMap = makeCanvas((g,w,h)=>{
+  g.fillStyle = '#d8b87e'; g.fillRect(0,0,w,h);
+  for(let i=0;i<700;i++){
+    const x=rnd()*w, y=rnd()*h, r=4+rnd()*14;
+    const grad=g.createRadialGradient(x,y,0,x,y,r);
+    grad.addColorStop(0, rnd()>0.5?'rgba(240,214,150,0.5)':'rgba(190,150,92,0.4)');
+    grad.addColorStop(1,'rgba(0,0,0,0)');
+    g.fillStyle=grad; g.beginPath(); g.arc(x,y,r,0,7); g.fill();
+  }
+  g.lineWidth=0.8;
+  for(let i=0;i<160;i++){
+    g.strokeStyle='rgba(170,70,55,0.25)';
+    const x=rnd()*w, y=rnd()*h;
+    g.beginPath(); g.moveTo(x,y);
+    g.quadraticCurveTo(x+20*rnd()-10, y+20*rnd()-10, x+34*rnd()-17, y+34*rnd()-17);
+    g.stroke();
+  }
+});
+
+/* ================= unified contraction shader ================= */
+const U = { uVent:{value:0}, uAtr:{value:0}, uEject:{value:0} };
+
+const DEFORM = `
+uniform float uVent; uniform float uAtr; uniform float uEject;
+vec3 heartDeform(vec3 p){
+  float wv   = smoothstep(0.60, -0.55, p.y);
+  float wa   = smoothstep(0.20, 0.70, p.y) * smoothstep(2.05, 1.05, p.y);
+  float wves = smoothstep(0.85, 1.55, p.y);
+  float t = clamp((0.45 - p.y) / 2.9, 0.0, 1.0);
+  vec2 axis = mix(vec2(0.02, 0.0), vec2(0.55, 0.05), t);
+  vec2 r = p.xz - axis;
+  float squeeze = uVent * 0.150 * wv + uAtr * 0.105 * wa;
+  r *= (1.0 - squeeze);
+  float tw = uVent * 0.32 * wv * wv;
+  float c = cos(tw), s = sin(tw);
+  r = vec2(c*r.x - s*r.y, s*r.x + c*r.y);
+  p.xz = axis + r;
+  p.y += uVent * 0.22 * wv * clamp((0.45 - p.y) * 0.45, 0.0, 1.0);
+  p.xz *= (1.0 + uEject * 0.045 * wves);
+  p.y  += uEject * 0.02 * wves;
+  return p;
+}`;
+
+function patchMaterial(mat){
+  mat.onBeforeCompile = (shader)=>{
+    shader.uniforms.uVent  = U.uVent;
+    shader.uniforms.uAtr   = U.uAtr;
+    shader.uniforms.uEject = U.uEject;
+    shader.vertexShader = DEFORM + "\n" + shader.vertexShader;
+    shader.vertexShader = shader.vertexShader.replace(
+      '#include <beginnormal_vertex>',
+      `#include <beginnormal_vertex>
+       vec3 hdP  = heartDeform(position);
+       vec3 hdPn = heartDeform(position + objectNormal * 0.02);
+       objectNormal = normalize(hdPn - hdP);`
+    );
+    shader.vertexShader = shader.vertexShader.replace(
+      '#include <begin_vertex>',
+      `vec3 transformed = hdP;`
+    );
+  };
+  return mat;
+}
+
+/* ================= materials (wet clearcoat, clipped, double-sided) ================= */
+function wet(opts){
+  const m = new THREE.MeshPhysicalMaterial(Object.assign({
+    roughness:0.38, metalness:0.0,
+    clearcoat:0.55, clearcoatRoughness:0.32,
+    side: THREE.DoubleSide,
+    clippingPlanes: [clipPlane],
+  }, opts));
+  return patchMaterial(m);
+}
+const matMyo  = wet({map:myoMap, bumpMap:myoBump, bumpScale:0.022, color:0xffffff});
+const matAtr  = wet({map:myoMap, bumpMap:myoBump, bumpScale:0.018, color:0xd8a89e});
+const matEndo = wet({map:endoMap, bumpMap:endoBump, bumpScale:0.035, color:0xffffff,
+                     roughness:0.30, clearcoat:0.75, clearcoatRoughness:0.25});
+const matEndoSmooth = wet({map:endoMap, bumpMap:endoBump, bumpScale:0.012, color:0xe8b8a8,
+                     roughness:0.26, clearcoat:0.8});  // smooth endothelium for vessels/atria
+const matAo   = wet({map:vesMap, bumpMap:vesBump, bumpScale:0.012, color:0xf0c8b8, roughness:0.30});
+const matPA   = wet({map:vesMap, bumpMap:vesBump, bumpScale:0.012, color:0x9a8ab8, roughness:0.30});
+const matVein = wet({map:vesMap, bumpMap:vesBump, bumpScale:0.012, color:0x7888b0, roughness:0.34});
+const matCor  = wet({map:vesMap, bumpMap:vesBump, bumpScale:0.008, color:0xffd0b0, roughness:0.26, clearcoat:0.8});
+const matCorV = wet({map:vesMap, bumpMap:vesBump, bumpScale:0.008, color:0x6878b8, roughness:0.28, clearcoat:0.8});
+const matFat  = wet({map:fatMap, bumpScale:0.02, color:0xffffff, roughness:0.5, clearcoat:0.4});
+
+/* ================= geometry helpers ================= */
+const heart = new THREE.Group();
+scene.add(heart);
+heart.rotation.y = 0.35;
+
+function addMesh(geo, mat){
+  const m = new THREE.Mesh(geo, mat);
+  heart.add(m);
+  return m;
+}
+
+/* one noise-displaced sphere shell, baked into heart space */
+function shellGeo(rx,ry,rz, x,y,z, rotZ, noiseAmt, seed, radiusScale, extraNoise){
+  const g = new THREE.SphereGeometry(1, 52, 40);
+  const p = g.attributes.position;
+  for(let i=0;i<p.count;i++){
+    const vx=p.getX(i), vy=p.getY(i), vz=p.getZ(i);
+    let n = n3(vx*1.9+seed, vy*1.9+seed*0.7, vz*1.9)*noiseAmt
+          + n3(vx*4.6+seed, vy*4.6, vz*4.6+seed)*noiseAmt*0.38;
+    if(extraNoise) n += n3(vx*9.5+seed*2, vy*9.5, vz*9.5)*extraNoise; // trabeculae
+    const s = (1+n) * radiusScale;
+    p.setXYZ(i, vx*s, vy*s, vz*s);
+  }
+  g.scale(rx,ry,rz);
+  if(rotZ) g.rotateZ(rotZ);
+  g.translate(x,y,z);
+  g.computeVertexNormals();
+  return g;
+}
+
+/* hollow chamber: outer myocardial shell + inner endocardial shell.
+   `wall` is the fractional wall thickness; inner shell shares the same
+   base noise so the cavity is congruent with the outside form. */
+function chamber(rx,ry,rz, x,y,z, rotZ, noiseAmt, seed, mat, wall, innerMat, trabec){
+  addMesh(shellGeo(rx,ry,rz,x,y,z,rotZ,noiseAmt,seed,1,0), mat);
+  if(wall){
+    addMesh(shellGeo(rx,ry,rz,x,y,z,rotZ,noiseAmt,seed,1-wall,trabec||0), innerMat||matEndo);
+  }
+}
+
+/* tortuous, tapered, lumpy vessel — optionally double-walled (lumen) */
+function jitter(pts, amt, seed){
+  const curve = new THREE.CatmullRomCurve3(pts);
+  const out = [];
+  const N = Math.max(pts.length*3, 8);
+  for(let i=0;i<=N;i++){
+    const u=i/N;
+    const p = curve.getPointAt(u);
+    const f = Math.sin(Math.PI*u);
+    p.x += n3(u*9+seed, seed*2, u*5)*amt*f;
+    p.y += n3(u*7+seed*3, u*11, seed)*amt*f*0.6;
+    p.z += n3(seed, u*8+seed, u*6)*amt*f;
+    out.push(p);
+  }
+  return out;
+}
+function tubeGeo(curve, r0, r1, opts, radiusScale){
+  const segs = opts.segs||72, radial = opts.radial||16;
+  const frames = curve.computeFrenetFrames(segs, false);
+  const pos=[], nor=[], uv=[], idx=[];
+  for(let i=0;i<=segs;i++){
+    const u=i/segs;
+    const p=curve.getPointAt(u);
+    const N=frames.normals[i], B=frames.binormals[i];
+    let r = (r0 + (r1-r0)*Math.pow(u,0.85)) * radiusScale;
+    r *= 1 + (opts.lump??0.05) * Math.sin(u*21.0+(opts.seed||0)*3.1) * Math.sin(u*8.3+1.7);
+    for(let j=0;j<=radial;j++){
+      const a=j/radial*Math.PI*2, ca=Math.cos(a), sa=Math.sin(a);
+      const rr = r*(1+(opts.oval??0.04)*Math.sin(2*a+u*6+(opts.seed||0)));
+      const nx=ca*N.x+sa*B.x, ny=ca*N.y+sa*B.y, nz=ca*N.z+sa*B.z;
+      pos.push(p.x+rr*nx, p.y+rr*ny, p.z+rr*nz);
+      nor.push(nx,ny,nz);
+      uv.push(u*3, j/radial);
+    }
+  }
+  for(let i=0;i<segs;i++)for(let j=0;j<radial;j++){
+    const a=i*(radial+1)+j, b=a+radial+1;
+    idx.push(a,b,a+1, b,b+1,a+1);
+  }
+  const g=new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.Float32BufferAttribute(pos,3));
+  g.setAttribute('normal',   new THREE.Float32BufferAttribute(nor,3));
+  g.setAttribute('uv',       new THREE.Float32BufferAttribute(uv,2));
+  g.setIndex(idx);
+  return g;
+}
+function vessel(pts, r0, r1, mat, opts){
+  opts = opts||{};
+  const curve = new THREE.CatmullRomCurve3(
+    opts.wobble!==false ? jitter(pts, opts.wobble||0.05, opts.seed||1) : pts);
+  addMesh(tubeGeo(curve, r0, r1, opts, 1), mat);
+  if(opts.wall){ // inner lumen wall, same path so they always move together
+    addMesh(tubeGeo(curve, r0, r1, opts, 1-opts.wall), opts.innerMat||matEndoSmooth);
+  }
+}
+const V = (x,y,z)=>new THREE.Vector3(x,y,z);
+
+/* ================= anatomy ================= */
+
+/* ventricular mass — hollow, thick-walled. LV thickest; trabeculated interiors */
+chamber(1.18, 1.55, 1.08,  0.35,-0.55, 0.00, -0.28, 0.045, 1.0, matMyo, 0.30, matEndo, 0.06); // LV
+chamber(1.02, 1.28, 0.97, -0.55,-0.35, 0.12,  0.18, 0.05,  4.2, matMyo, 0.18, matEndo, 0.06); // RV
+chamber(0.56, 0.82, 0.52,  0.55,-1.65, 0.00, -0.45, 0.06,  7.7, matMyo, 0.34, matEndo, 0.05); // apex
+
+/* atria — thin-walled, smoother interior */
+chamber(0.74, 0.64, 0.70, -0.95, 0.72, 0.14, 0,    0.07,  2.6, matAtr, 0.12, matEndoSmooth);  // RA (nudged forward)
+chamber(0.68, 0.60, 0.64,  0.78, 0.82,-0.25, 0,    0.07,  5.9, matAtr, 0.12, matEndoSmooth);  // LA
+chamber(0.30, 0.20, 0.26,  1.27, 0.95, 0.27, 0.4,  0.16,  9.4, matAtr, 0, null);              // LAA (solid, tiny)
+chamber(0.26, 0.18, 0.22, -1.32, 0.85, 0.42, -0.5, 0.16, 11.2, matAtr, 0, null);              // RAA
+
+/* ---- great vessels: tapered, tortuous, double-walled ---- */
+/* aorta — descending limb pushed posterior + lateral, clear of the RA */
+vessel([V(0.15,0.40,0.10), V(0.06,1.45,0.02), V(-0.28,2.15,-0.30),
+        V(-0.92,2.22,-0.72), V(-1.30,1.62,-1.02), V(-1.42,0.50,-1.12)],
+       0.355, 0.295, matAo, {seed:1, wobble:0.025, lump:0.03, segs:96, wall:0.18});
+/* arch branches */
+vessel([V(-0.08,2.10,-0.18), V(-0.13,2.95,-0.24)], 0.115,0.085, matAo, {seed:2, wobble:0.05, wall:0.18});
+vessel([V(-0.40,2.20,-0.40), V(-0.47,3.00,-0.48)], 0.085,0.06,  matAo, {seed:3, wobble:0.05, wall:0.18});
+vessel([V(-0.72,2.16,-0.58), V(-0.85,2.92,-0.68)], 0.09, 0.065, matAo, {seed:4, wobble:0.05, wall:0.18});
+/* pulmonary trunk crossing in front, bifurcating */
+vessel([V(-0.45,0.32,0.46), V(-0.15,1.05,0.50), V(0.15,1.55,0.30)],
+       0.30,0.26, matPA, {seed:5, wobble:0.03, wall:0.16});
+vessel([V(0.15,1.55,0.30), V(0.60,1.66,0.16), V(1.05,1.72,-0.02)], 0.21,0.165, matPA, {seed:6, wobble:0.04, wall:0.16});
+vessel([V(0.15,1.55,0.30), V(-0.35,1.68,0.10), V(-0.80,1.78,-0.06)],0.21,0.165, matPA, {seed:7, wobble:0.04, wall:0.16});
+/* venae cavae — entering the forward-nudged RA */
+vessel([V(-0.95,2.35,0.18), V(-0.98,1.55,0.18), V(-0.95,1.02,0.16)], 0.265,0.24, matVein, {seed:8, wobble:0.03, wall:0.13});
+vessel([V(-1.00,0.42,0.18), V(-1.10,-0.45,0.28), V(-1.16,-1.05,0.32)],0.27,0.25, matVein, {seed:9, wobble:0.03, wall:0.13});
+/* pulmonary veins (×4) into LA */
+vessel([V(0.92,1.02,-0.46), V(1.45,1.22,-0.78), V(1.85,1.30,-0.98)], 0.13,0.10, matVein,{seed:10,wobble:0.05, wall:0.13});
+vessel([V(1.00,0.68,-0.48), V(1.55,0.62,-0.84), V(1.95,0.58,-1.02)], 0.13,0.10, matVein,{seed:11,wobble:0.05, wall:0.13});
+vessel([V(0.55,0.98,-0.55), V(0.30,1.25,-1.00)], 0.11,0.09, matVein,{seed:12,wobble:0.05, wall:0.13});
+vessel([V(0.50,0.70,-0.58), V(0.20,0.70,-1.05)], 0.11,0.09, matVein,{seed:13,wobble:0.05, wall:0.13});
+
+/* ---- epicardial fat in the grooves ---- */
+vessel([V(-1.15,0.28,0.45), V(-0.45,0.36,0.82), V(0.30,0.40,0.80), V(1.05,0.22,0.50), V(1.38,-0.10,0.08)],
+       0.115,0.09, matFat, {seed:20, wobble:0.05, lump:0.22, radial:12});
+vessel([V(0.12,0.34,0.85), V(-0.04,-0.35,1.02), V(0.16,-1.02,0.80), V(0.46,-1.60,0.40)],
+       0.10,0.05, matFat, {seed:21, wobble:0.05, lump:0.24, radial:12});
+chamber(0.5,0.22,0.45, -0.15,0.42,0.35, 0.1, 0.2, 30, matFat, 0, null);
+
+/* ---- coronary tree (solid — too fine to need lumens) ---- */
+vessel([V(0.10,0.36,0.88), V(-0.05,-0.35,1.05), V(0.15,-1.00,0.83), V(0.45,-1.58,0.43)],
+       0.052,0.014, matCor, {seed:31, wobble:0.06, lump:0.08, segs:80, radial:10});
+vessel([V(-0.02,-0.10,1.02), V(0.42,-0.42,0.92), V(0.78,-0.72,0.70)], 0.030,0.008, matCor,{seed:32,wobble:0.07,radial:8});
+vessel([V(0.05,-0.62,0.95), V(0.45,-0.92,0.80), V(0.78,-1.18,0.55)], 0.026,0.007, matCor,{seed:33,wobble:0.07,radial:8});
+vessel([V(0.10,-1.10,0.80), V(0.42,-1.32,0.62)], 0.018,0.006, matCor,{seed:34,wobble:0.07,radial:7});
+vessel([V(-0.04,-0.30,1.02), V(-0.30,-0.52,0.88)], 0.016,0.006, matCor,{seed:35,wobble:0.08,radial:7});
+vessel([V(0.22,0.40,0.82), V(0.92,0.18,0.58), V(1.32,-0.25,0.05), V(1.30,-0.70,-0.40)],
+       0.046,0.012, matCor, {seed:36, wobble:0.06, segs:64, radial:10});
+vessel([V(1.05,0.02,0.45), V(1.25,-0.55,0.42), V(1.18,-1.05,0.30)], 0.026,0.008, matCor,{seed:37,wobble:0.07,radial:8});
+vessel([V(1.30,-0.35,-0.05), V(1.30,-0.95,-0.10)], 0.020,0.007, matCor,{seed:38,wobble:0.07,radial:7});
+vessel([V(-0.28,0.36,0.82), V(-0.95,0.05,0.62), V(-1.28,-0.55,0.20), V(-1.10,-1.10,-0.15)],
+       0.046,0.014, matCor, {seed:39, wobble:0.06, segs:64, radial:10});
+vessel([V(-1.10,-0.30,0.45), V(-0.85,-0.85,0.62), V(-0.50,-1.30,0.60)], 0.024,0.008, matCor,{seed:40,wobble:0.07,radial:8});
+vessel([V(-1.18,-0.85,0.02), V(-0.70,-1.40,0.30), V(-0.10,-1.80,0.35)], 0.026,0.008, matCor,{seed:41,wobble:0.06,radial:8});
+vessel([V(0.22,0.30,0.90), V(0.05,-0.42,1.05), V(0.24,-1.05,0.82)], 0.034,0.012, matCorV,{seed:42,wobble:0.07,radial:9});
+vessel([V(0.30,0.34,0.84), V(0.95,0.10,0.62), V(1.30,-0.30,0.12)], 0.030,0.012, matCorV,{seed:43,wobble:0.07,radial:9});
+vessel([V(-0.60,-0.15,0.95), V(-0.90,-0.62,0.78), V(-1.00,-1.00,0.50)], 0.016,0.006, matCorV,{seed:44,wobble:0.09,radial:7});
+
+heart.position.y = -0.15;
+
+/* soft ground shadow disc */
+const glowT = makeCanvas((g,w,h)=>{
+  const grad=g.createRadialGradient(w/2,h/2,0,w/2,h/2,w/2);
+  grad.addColorStop(0,'rgba(0,0,0,0.55)'); grad.addColorStop(1,'rgba(0,0,0,0)');
+  g.fillStyle=grad; g.fillRect(0,0,w,h);
+},256);
+const shadow = new THREE.Mesh(new THREE.PlaneGeometry(6,6),
+  new THREE.MeshBasicMaterial({map:glowT, transparent:true, depthWrite:false}));
+shadow.rotation.x=-Math.PI/2; shadow.position.y=-3.0; scene.add(shadow);
+
+/* ================= custom orbit controls ================= */
+const cam = {theta: 0.45, phi: 1.35, dist: 8.5, target: new THREE.Vector3(0,0.3,0)};
+let autoSpin=false;
+function applyCamera(){
+  cam.phi = Math.max(0.15, Math.min(Math.PI-0.15, cam.phi));
+  cam.dist = Math.max(3.0, Math.min(18, cam.dist));
+  const t=cam.target;
+  camera.position.set(
+    t.x + cam.dist*Math.sin(cam.phi)*Math.sin(cam.theta),
+    t.y + cam.dist*Math.cos(cam.phi),
+    t.z + cam.dist*Math.sin(cam.phi)*Math.cos(cam.theta));
+  camera.lookAt(t);
+}
+applyCamera();
+
+let dragging=false, panning=false, px=0, py=0;
+const el = renderer.domElement;
+el.addEventListener('contextmenu', e=>e.preventDefault());
+el.addEventListener('pointerdown', e=>{
+  dragging=e.button===0; panning=e.button===2;
+  px=e.clientX; py=e.clientY; el.setPointerCapture(e.pointerId);
+});
+el.addEventListener('pointermove', e=>{
+  if(!dragging&&!panning) return;
+  const dx=e.clientX-px, dy=e.clientY-py; px=e.clientX; py=e.clientY;
+  if(dragging){ cam.theta-=dx*0.006; cam.phi-=dy*0.006; }
+  if(panning){
+    const right=new THREE.Vector3().setFromMatrixColumn(camera.matrix,0);
+    const up=new THREE.Vector3().setFromMatrixColumn(camera.matrix,1);
+    cam.target.addScaledVector(right,-dx*0.0005*cam.dist);
+    cam.target.addScaledVector(up, dy*0.0005*cam.dist);
+  }
+  applyCamera();
+});
+el.addEventListener('pointerup', ()=>{dragging=panning=false;});
+el.addEventListener('wheel', e=>{
+  e.preventDefault();
+  cam.dist *= (1+Math.sign(e.deltaY)*0.08);
+  applyCamera();
+},{passive:false});
+let pinchDist=null;
+el.addEventListener('touchmove', e=>{
+  if(e.touches.length===2){
+    e.preventDefault();
+    const d=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,
+                       e.touches[0].clientY-e.touches[1].clientY);
+    if(pinchDist){ cam.dist*=pinchDist/d; applyCamera(); }
+    pinchDist=d;
+  }
+},{passive:false});
+el.addEventListener('touchend', ()=>{pinchDist=null;});
+
+/* ================= cardiac cycle ================= */
+let bpm=72, ampPct=100, beating=!prefersReduced;
+const bpmSlider=document.getElementById('bpm'), ampSlider=document.getElementById('amp');
+const bpmVal=document.getElementById('bpmVal'), ampVal=document.getElementById('ampVal');
+bpmSlider.oninput=()=>{bpm=+bpmSlider.value; bpmVal.textContent=bpm;};
+ampSlider.oninput=()=>{ampPct=+ampSlider.value; ampVal.textContent=ampPct;};
+
+const btnPause=document.getElementById('btnPause');
+btnPause.onclick=()=>{
+  beating=!beating;
+  btnPause.textContent=beating?'Beating':'Paused';
+  btnPause.classList.toggle('active',beating);
+  btnPause.setAttribute('aria-pressed',beating);
+};
+if(prefersReduced){btnPause.textContent='Paused'; btnPause.classList.remove('active');}
+const btnLabels=document.getElementById('btnLabels');
+btnLabels.onclick=()=>{
+  document.body.classList.toggle('labels-on');
+  const on=document.body.classList.contains('labels-on');
+  btnLabels.classList.toggle('active',on);
+  btnLabels.setAttribute('aria-pressed',on);
+};
+const btnSpin=document.getElementById('btnSpin');
+btnSpin.onclick=()=>{autoSpin=!autoSpin; btnSpin.classList.toggle('active',autoSpin);};
+
+/* ---- slice controls ---- */
+const depthSlider = document.getElementById('depth');
+const depthVal = document.getElementById('depthVal');
+const sliceBtns = {
+  off:   document.getElementById('sliceOff'),
+  front: document.getElementById('sliceFront'),
+  side:  document.getElementById('sliceSide'),
+  top:   document.getElementById('sliceTop'),
+};
+function setSlice(mode){
+  sliceMode = mode;
+  for(const k in sliceBtns) sliceBtns[k].classList.toggle('active', k===mode);
+  depthSlider.disabled = (mode==='off');
+  applySlice();
+}
+for(const k in sliceBtns) sliceBtns[k].onclick = ()=>setSlice(k);
+depthSlider.oninput = ()=>{
+  sliceDepth = +depthSlider.value/100;
+  depthVal.textContent = sliceDepth.toFixed(1);
+  applySlice();
+};
+
+let phase=0, lastT=performance.now();
+function pulseCurve(p, attack, release){
+  if(p<attack||p>release) return 0;
+  const x=(p-attack)/(release-attack);
+  return Math.sin(Math.PI*Math.pow(x,0.7));
+}
+
+/* ================= ECG ================= */
+const ecgC=document.getElementById('ecg'), ecgCtx=ecgC.getContext('2d');
+let ecgX=0, prevEy=32;
+function sizeEcg(){
+  ecgC.width=innerWidth*devicePixelRatio; ecgC.height=54*devicePixelRatio;
+  ecgCtx.scale(devicePixelRatio,devicePixelRatio);
+  ecgCtx.clearRect(0,0,innerWidth,54); ecgX=0;
+}
+sizeEcg();
+function ecgY(p){
+  let v=0; const g=(c,w,h)=>h*Math.exp(-Math.pow((p-c)/w,2));
+  v+=g(0.08,0.025,4); v+=g(0.20,0.008,-5); v+=g(0.225,0.012,22);
+  v+=g(0.255,0.009,-7); v+=g(0.42,0.045,6);
+  return 32-v;
+}
+function drawEcg(){
+  const w=innerWidth;
+  ecgCtx.fillStyle='rgba(13,12,11,0.06)'; ecgCtx.fillRect(0,0,w,54);
+  const y=beating?ecgY(phase):32;
+  ecgCtx.strokeStyle='#c44536'; ecgCtx.lineWidth=1.4;
+  ecgCtx.beginPath(); ecgCtx.moveTo(ecgX,prevEy);
+  const nx=ecgX+1.6; ecgCtx.lineTo(nx,y); ecgCtx.stroke();
+  prevEy=y; ecgX=nx;
+  if(ecgX>w){ecgX=0; ecgCtx.clearRect(0,0,w,54);}
+}
+
+/* ================= labels ================= */
+const anchors=[
+  ['tag-ao',  new THREE.Vector3(-0.55, 2.5, -0.5)],
+  ['tag-pa',  new THREE.Vector3(-0.1, 1.25, 0.7)],
+  ['tag-ra',  new THREE.Vector3(-1.6, 0.75, 0.4)],
+  ['tag-la',  new THREE.Vector3(1.5, 1.05, -0.25)],
+  ['tag-rv',  new THREE.Vector3(-1.35, -0.6, 0.6)],
+  ['tag-lv',  new THREE.Vector3(1.45, -0.9, 0.3)],
+  ['tag-svc', new THREE.Vector3(-1.45, 2.05, 0.25)],
+  ['tag-lad', new THREE.Vector3(0.05, -0.7, 1.25)],
+].map(([id,v])=>[document.getElementById(id), v]);
+function updateLabels(){
+  if(!document.body.classList.contains('labels-on')) return;
+  for(const [elTag,v] of anchors){
+    const p=v.clone().applyAxisAngle(new THREE.Vector3(0,1,0), heart.rotation.y).add(heart.position);
+    p.project(camera);
+    elTag.style.opacity = p.z>1 ? 0 : '';
+    elTag.style.left=((p.x*0.5+0.5)*innerWidth)+'px';
+    elTag.style.top=((-p.y*0.5+0.5)*innerHeight)+'px';
+  }
+}
+
+/* ================= loop ================= */
+function animate(now){
+  requestAnimationFrame(animate);
+  const dt=Math.min(0.05,(now-lastT)/1000); lastT=now;
+  if(beating) phase=(phase+dt*bpm/60)%1;
+  const amp=ampPct/100;
+
+  U.uAtr.value   = pulseCurve(phase, 0.02, 0.20) * amp;
+  U.uVent.value  = pulseCurve(phase, 0.18, 0.55) * amp;
+  U.uEject.value = pulseCurve(phase, 0.23, 0.50) * amp;
+
+  fill.intensity = 0.45 + U.uVent.value*1.6;
+  glint.intensity = 0.55 + U.uVent.value*0.4;
+
+  if(autoSpin){ cam.theta+=dt*0.25; applyCamera(); }
+
+  drawEcg();
+  updateLabels();
+  renderer.render(scene,camera);
+}
+requestAnimationFrame(animate);
+
+window.addEventListener('resize', ()=>{
+  camera.aspect=innerWidth/innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth,innerHeight);
+  sizeEcg();
+});
+})();
+</script>
+</body>
+</html>
