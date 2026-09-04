@@ -1,10 +1,27 @@
-# Mick Lynch's Portfolio
+# Michael Lynch — portfolio
 
-> A portfolio website showcasing the projects and experience of Mick Lynch, a software engineer.
+> Personal site of Michael Lynch (BEng, PhD), a product leader in Toronto working on AI in healthcare.
 
-## Main Sections
+## Sections
 
-*   [Home](index.html) - The main landing page.
-*   [Projects](index.html#projects) - A list of projects with descriptions and links.
-*   [Experience](index.html#experience) - A summary of professional experience.
-*   [Contact](index.html#contact) - Contact information.
+* [Home](index.html) — hero, positioning, primary calls to action.
+* [About](index.html#about) — background, career through-line, how to get in touch.
+* [Focus](index.html#focus) — three areas of current work: cooperative agents, clinical data interfaces, product at scale.
+* [Work](index.html#projects) — eight projects across open source, research, and health-system product work.
+* [Elsewhere](index.html#elsewhere) — links to Google Scholar, GitHub, Medium, LinkedIn, and Calendly.
+
+## Selected projects
+
+* **The Healthcare Agents Collective** — multi-agent A2A system for clinical care.
+* **MCP Server for FHIR** — query FHIR servers in natural language.
+* **ReferWell** — open-source patient referral coordination.
+* **HospitalGPT** — AI agents managing simulated patient populations.
+* **FibrosisNet / COVIDNet** — medical imaging research (DarwinAI).
+* **Privata.ai & Patient Data Network** — co-founded startup, internal breach detection.
+* **AI products at Providence** — AI product initiatives across a large health system.
+* **OpenMRS Java SDK** — EMR integration for the Privata.ai platform.
+
+## Contact
+
+* Toronto, Canada.
+* Email is assembled client-side via JavaScript to avoid scraper harvesting; phone and Calendly link are in the footer.

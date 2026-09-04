@@ -1,655 +1,318 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Michael Lynch - Product Leader | AI & Healthcare</title>
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-    <!-- Font Awesome for Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="llm" href="/llm.txt" type="text/markdown">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Michael Lynch — Product Leader, AI &amp; Healthcare</title>
+<meta name="description" content="Michael Lynch (BEng, PhD) is a product leader in Toronto building AI for healthcare — agent collectives, FHIR tooling, and medical imaging research, with two decades of shipping products that matter.">
+<meta name="author" content="Michael Lynch">
+<meta name="theme-color" content="#0f6e5c" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0e0f12" media="(prefers-color-scheme: dark)">
 
-    <style>
-        :root {
-            --primary-color: #7dd3fc; /* sky-300 - cyan/blue */
-            --secondary-color: #a78bfa; /* violet-400 - purple */
-            --tertiary-color: #34d399; /* emerald-400 - teal/green */
-            --accent-color: #f0abfc; /* fuchsia-300 - pink/purple */
-            
-            /* Professional grey/white tones for text */
-            --text-color: #e2e8f0; /* slate-200 - main text */
-            --text-heading: #f8fafc; /* slate-50 - headings */
-            --text-muted: #94a3b8; /* slate-400 - muted text */
-            --text-icons: #cbd5e1; /* slate-300 - icons */
-            --text-hover: #ffffff; /* white - hover state */
-            
-            /* Subtle toned-down colors for links */
-            --link-color: #5eead4; /* teal-300 - subtle but visible */
-            --link-hover-color: #ffffff; /* white - link hover */
-            --card-bg: rgba(15, 23, 42, 0.7); /* Very dark blue with alpha */
-            --border-color: rgba(203, 213, 225, 0.2); /* neutral border */
-            --bg-primary: #0f172a; /* slate-900 */
-            --bg-secondary: #1e293b; /* slate-800 */
-        }
+<meta property="og:type" content="website">
+<meta property="og:title" content="Michael Lynch — Product Leader, AI &amp; Healthcare">
+<meta property="og:description" content="Building AI that helps healthcare and clinical teams at scale. Two decades of products, startups, and open source.">
+<meta property="og:url" content="https://micklynch.github.io/">
+<meta property="og:image" content="https://micklynch.github.io/images/profile.jpg">
+<meta name="twitter:card" content="summary">
 
-        body {
-            font-family: 'Fira Mono', monospace;
-            background: var(--bg-primary);
-            color: var(--text-color);
-            margin: 0;
-            padding: 0;
-            line-height: 1.7;
-            font-size: 16px;
-            overflow-x: hidden;
-            position: relative;
-        }
-
-        /* Animated gradient background */
-        body::before {
-            content: '';
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            width: 300dvmax; /* Use vmax to cover diagonal */
-            height: 300dvmax;
-            transform: translate(-50%, -50%); /* Center the element */
-            transform-origin: center center;
-            background:
-                radial-gradient(circle at 20% 30%, rgba(38, 77, 94, 0.15) 0%, transparent 50%),
-                radial-gradient(circle at 80% 70%, rgba(50, 41, 78, 0.15) 0%, transparent 50%),
-                radial-gradient(circle at 40% 80%, rgba(21, 90, 65, 0.15) 0%, transparent 50%),
-                radial-gradient(circle at 90% 20%, rgba(89, 31, 79, 0.351) 0%, transparent 50%);
-            animation: rotateGradient 20s linear infinite;
-            z-index: -1;
-            pointer-events: none;
-        }
-
-        @keyframes rotateGradient {
-            0% {
-                transform: translate(-50%, -50%) rotate(0deg);
-            }
-            100% {
-                transform: translate(-50%, -50%) rotate(360deg);
-            }
-        }
-
-        /* Code-like grid overlay */
-        body::after {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            width: 100%;
-            height: 100%;
-            background-image:
-                linear-gradient(rgba(125, 211, 252, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(125, 211, 252, 0.03) 1px, transparent 1px);
-            background-size: 20px 20px;
-            z-index: -1;
-            pointer-events: none;
-        }
-
-        /* Noise texture overlay for rustic effect */
-        .noise-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            pointer-events: none;
-            opacity: 0.8;
-        }
-
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 2rem 1rem; /* Add padding for smaller screens */
-        }
-
-        /* --- Header Styles --- */
-        header {
-            text-align: center;
-            margin-bottom: 3rem;
-            padding-top: 2rem;
-            animation: fadeIn 1s ease-out;
-        }
-
-        .profile-pic-container {
-            margin-bottom: 1.5rem;
-        }
-
-        .profile-pic {
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            border: 4px solid #cbd5e1;
-            box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
-            object-fit: cover;
-            animation: float 4s ease-in-out infinite;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-12px); }
-        }
-
-
-
-        h1.name {
-            font-size: 2.8rem;
-            margin-bottom: 0.2rem;
-            font-weight: 700;
-            color: var(--text-heading);
-        }
-
-        p.credentials, p.location {
-            font-size: 1.1rem;
-            color: var(--text-muted);
-            margin: 0.1rem 0;
-        }
-
-        .contact-info {
-            margin-top: 1rem;
-            font-size: 1rem;
-        }
-        .contact-info a {
-            color: var(--text-color);
-            text-decoration: none;
-            margin: 0 0.75rem;
-            transition: color 0.3s ease, text-shadow 0.3s ease, opacity 0.3s ease; /* Added opacity transition */
-        }
-        .contact-info a:hover {
-            color: var(--text-hover);
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
-        }
-        .contact-info i {
-            margin-right: 0.4rem;
-            color: #7dd3fc; /* Subtle cyan for icons */
-        }
-        /* Style for the placeholder state */
-        #email-link.loading {
-             opacity: 0.6;
-             cursor: default;
-        }
-
-
-        .social-links {
-            margin-top: 1.5rem;
-            display: flex;
-            justify-content: center;
-            gap: 1.5rem; /* Spacing between icons */
-        }
-
-        .social-links a {
-            font-size: 1.8rem; /* Larger icons */
-            color: #94a3b8; /* Muted grey */
-            text-decoration: none;
-            transition: color 0.3s ease, transform 0.3s ease, text-shadow 0.3s ease;
-        }
-
-        .social-links a:hover {
-            color: #7dd3fc; /* Subtle cyan on hover */
-            transform: translateY(-3px) scale(1.1);
-            text-shadow: 0 0 10px rgba(125, 211, 252, 0.4);
-        }
-
-        /* --- General Styles --- */
-        h2 {
-            font-size: 1.8rem;
-            font-weight: 500;
-            margin-top: 2.5rem;
-            margin-bottom: 1.5rem;
-            position: relative;
-            display: inline-block; /* Make underline fit content */
-            padding-bottom: 0.5rem; /* Space for underline */
-        }
-        /* Underline effect for H2 */
-        h2::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 60%; /* Width of the underline */
-            height: 2px; /* Thickness of the underline */
-            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
-            border-radius: 1px;
-        }
-
-
-        p {
-            margin-bottom: 1rem;
-        }
-
-        a {
-            color: var(--link-color);
-            text-decoration: none;
-            transition: color 0.3s ease, text-shadow 0.3s ease;
-        }
-
-        a.glow-hover:hover {
-            color: var(--text-hover);
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
-        }
-
-       /* --- Utility Classes --- */
-        .gradient-text {
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
-
-        .fade-in {
-            animation: fadeIn 1.5s ease-out forwards; /* Use forwards to keep final state */
-            opacity: 0; /* Start invisible */
-        }
-
-        /* Apply fade-in with delay to sections */
-        section {
-           opacity: 0; /* Start invisible before animation */
-        }
-        #about { animation-delay: 0.2s; }
-        #projects { animation-delay: 0.4s; }
-
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .section-divider {
-            height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(125, 211, 252, 0.3), transparent);
-            margin: 3rem auto; /* Center divider */
-            width: 80%;
-        }
-
-        /* --- Projects Section --- */
-        .projects-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Responsive grid */
-            gap: 2rem;
-        }
-
-        .project-card {
-            background: var(--card-bg);
-            border-radius: 8px;
-            padding: 1.5rem;
-            border: 1px solid var(--border-color);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            display: flex; /* Use flexbox for layout */
-            flex-direction: column; /* Stack elements vertically */
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        .project-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 0 25px rgba(125, 211, 252, 0.4);
-            border-color: rgba(125, 211, 252, 0.5);
-        }
-
-        .project-image-placeholder {
-            width: 100%;
-            height: 180px; /* Fixed height for placeholders */
-            background-color: var(--bg-secondary);
-            border-radius: 6px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--text-muted);
-            font-size: 0.9rem;
-            margin-bottom: 1rem;
-            text-align: center;
-            object-fit: cover; /* Good practice if using actual images */
-        }
-
-        .project-video-placeholder {
-            position: relative;
-            width: 100%;
-            height: 180px; /* Fixed height for placeholders */
-            background-color: var(--bg-secondary);
-            border-radius: 6px;
-            margin-bottom: 1rem;
-            overflow: hidden; /* Ensures the iframe corners are rounded */
-        }
-
-        .project-video-placeholder .project-video {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            border: 0; /* Remove default iframe border */
-        }
-
-        .project-card h3 {
-            font-size: 1.2rem;
-            font-weight: 500;
-            margin-top: 0; /* Remove default margin */
-            margin-bottom: 0.5rem;
-            color: var(--text-color);
-        }
-
-        .project-card p {
-            font-size: 0.95rem;
-            flex-grow: 1; /* Allow description to take available space */
-            margin-bottom: 1rem;
-        }
-
-        .project-link {
-            display: inline-block; /* Make it behave like a button */
-            margin-top: auto; /* Push link to the bottom */
-            padding: 0.5rem 1rem;
-            border: 1px solid #7dd3fc;
-            border-radius: 4px;
-            color: #7dd3fc; /* Subtle cyan for button text */
-            text-align: center;
-            transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
-        }
-
-        /* More specific selector to override a.glow-hover:hover */
-        a.project-link:hover {
-            background-color: var(--text-hover);
-            border-color: var(--text-hover);
-            color: var(--bg-primary) !important; /* Dark text on white background */
-            text-shadow: none !important;
-            box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
-        }
-
-        /* --- Footer --- */
-        footer {
-            text-align: center;
-            margin-top: 4rem;
-            padding: 1.5rem 0;
-            font-size: 0.9rem;
-            color: var(--text-muted);
-            border-top: 1px solid rgba(125, 211, 252, 0.1);
-        }
-
-        /* Responsive noise optimization for different display resolutions */
-        @media (max-resolution: 1dppx) {
-            /* Standard displays (1x) - reduce noise intensity */
-            .noise-overlay {
-                opacity: 0.3 !important;
-            }
-        }
-
-        @media (min-resolution: 2dppx) {
-            /* High DPI displays (Retina/2x+) - can handle more noise */
-            .noise-overlay {
-                opacity: 0.6 !important;
-            }
-        }
-
-        @media (min-resolution: 3dppx) {
-            /* Very high DPI displays - optimal noise */
-            .noise-overlay {
-                opacity: 0.7 !important;
-            }
-        }
-
-        /* --- Responsive Adjustments --- */
-        @media (max-width: 768px) {
-            h1.name {
-                font-size: 2.2rem;
-            }
-            .profile-pic {
-                width: 120px;
-                height: 120px;
-            }
-            h2 {
-                font-size: 1.6rem;
-            }
-            .contact-info {
-                 display: flex;
-                 flex-direction: column;
-                 gap: 0.5rem;
-                 align-items: center; /* Center items when stacked */
-            }
-            .contact-info a {
-                margin: 0;
-            }
-            .projects-grid {
-                grid-template-columns: 1fr; /* Stack projects on smaller screens */
-            }
-        }
-         @media (max-width: 480px) {
-            body {
-                 font-size: 15px;
-            }
-             h1.name {
-                font-size: 1.9rem;
-            }
-            .profile-pic {
-                width: 100px;
-                height: 100px;
-            }
-             h2 {
-                font-size: 1.4rem;
-            }
-            .social-links {
-                gap: 1rem;
-            }
-             .social-links a {
-                font-size: 1.6rem;
-            }
-             .project-card {
-                 padding: 1rem;
-             }
-        }
-
-   </style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400;1,6..72,500&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🥦</text></svg>">
 </head>
 <body>
-    <!-- SVG filter for black noise texture -->
-    <svg class="noise-overlay" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-            <filter id="noiseFilter" x="0%" y="0%" width="100%" height="100%">
-                <feTurbulence
-                    type="fractalNoise"
-                    baseFrequency="0.9"
-                    numOctaves="4"
-                    stitchTiles="stitch"/>
-                <feColorMatrix type="saturate" values="0"/>
-                <feComponentTransfer>
-                    <feFuncR type="linear" slope="0.4" intercept="0"/>
-                    <feFuncG type="linear" slope="0.4" intercept="0"/>
-                    <feFuncB type="linear" slope="0.4" intercept="0"/>
-                </feComponentTransfer>
-            </filter>
-        </defs>
-        <rect x="0" y="0" width="100%" height="100%" filter="url(#noiseFilter)" opacity="0.5"/>
-    </svg>
-    
-    <div class="container">
-        <header>
-            <div class="profile-pic-container">
-                <!-- === PROFILE PICTURE === -->
-                <img src="images/profile.jpg" alt="Michael Lynch Profile Picture" class="profile-pic">
-            </div>
 
-            <h1 class="name">Michael Lynch</h1>
-            <p class="credentials">BEng, PhD</p>
-            <p class="location"><i class="fas fa-map-marker-alt"></i> Toronto, Canada</p>
+<a class="skip" href="#main">Skip to content</a>
 
-            <div class="contact-info">
-                <!-- Email placeholder -->
-                <a id="email-link" href="#" class="glow-hover loading">
-                    <i class="fas fa-envelope"></i>
-                    <span><!-- Email address loads here --></span>
-                </a>
-                <a href="tel:647-914-8723" class="glow-hover"><i class="fas fa-phone"></i> 647-914-8723</a>
-            </div>
+<header class="site">
+  <div class="wrap">
+    <a class="nav-brand" href="#top">Michael Lynch <span>/ Toronto</span></a>
+    <nav class="links" aria-label="Primary">
+      <a href="#about">About</a>
+      <a href="#focus">Focus</a>
+      <a href="#projects">Work</a>
+      <a href="#elsewhere">Elsewhere</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </div>
+</header>
 
-            <div class="social-links">
-                <a href="https://linkedin.com/in/michaellynchphd" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn Profile"><i class="fab fa-linkedin"></i></a>
-                <a href="https://github.com/micklynch/" target="_blank" rel="noopener noreferrer" aria-label="GitHub Profile"><i class="fab fa-github"></i></a>
-                <a href="https://scholar.google.ca/citations?user=Mgdx1_QAAAAJ" target="_blank" rel="noopener noreferrer" aria-label="Google Scholar Profile"><i class="fas fa-graduation-cap"></i></a>
-                <a href="https://medium.com/@micklynch_6905" target="_blank" rel="noopener noreferrer" aria-label="Medium Profile"><i class="fab fa-medium"></i></a>
-            </div>
-        </header>
+<div id="top"></div>
 
-        <main>
-            <section id="about" class="fade-in">
-                <h2>About Me</h2>
-                <p>
-                    Hey, I'm Michael <img src="images/blob-wave.gif" width="25" alt="waving hand"/> — a product builder who's spent close to two decades building and launching tech that actually makes a difference. Mostly, I focus on AI in healthcare — getting smart solutions into the hands of patients (millions of them, in fact) and clinicial teams.
-                </p>
-                <p>
-                    I’ve led transformations, started a company, and still love the nerdy side of things enough to teach and contribute to open-source projects. My early graduate work was all about building data sets to train computers to do human-like tasks — a foundation that still shapes how I think about AI today.
-                </p>
-                <p>
-                    If you’re into AI, healthcare, or just a good chat about where the two meet, you can <a href="https://calendly.com/mick-lynch/30min" target="_blank" rel="noopener noreferrer" class="glow-hover">grab some time with me here</a>.
-                </p>
-                <p>
-                    More of the career details live over on <a href="https://linkedin.com/in/michaellynchphd" target="_blank" rel="noopener noreferrer" class="glow-hover">LinkedIn</a>.
-                </p>
-            </section>
+<!-- ============ HERO ============ -->
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <span class="eyebrow">Available for interesting problems</span>
+      <h1>Building AI that actually helps <em>healthcare</em>.</h1>
+      <p class="lede">
+        I'm <strong>Michael Lynch</strong>, BEng PhD — a product leader in Toronto with close to two decades
+        of turning ideas into shipped products. Most of my work sits where <strong>AI meets healthcare</strong>:
+        getting useful systems into the hands of care teams and the millions of patients they serve.
+      </p>
 
-            <div class="section-divider"></div>
+      <div class="meta">
+        <a href="https://www.linkedin.com/in/michaellynchphd" target="_blank" rel="noopener noreferrer">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9h4v12H3zM9 9h3.8v1.7h.05c.53-1 1.83-2.05 3.77-2.05C20.3 8.65 21 11 21 14.1V21h-4v-6.1c0-1.45-.03-3.3-2.02-3.3-2.02 0-2.33 1.57-2.33 3.2V21H9z"/></svg>
+          LinkedIn
+        </a>
+        <a href="https://github.com/micklynch" target="_blank" rel="noopener noreferrer">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.4c.58.1.79-.25.79-.56v-2.2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.34-1.29-1.7-1.29-1.7-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.7 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.79 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.43-2.69 5.4-5.25 5.69.41.36.78 1.06.78 2.14v3.17c0 .31.2.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg>
+          GitHub
+        </a>
+        <a href="https://scholar.google.ca/citations?user=Mgdx1_QAAAAJ" target="_blank" rel="noopener noreferrer">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M22 9 12 4 2 9l10 5 10-5zM6 11.5V17c0 1.7 2.7 3 6 3s6-1.3 6-3v-5.5"/></svg>
+          Scholar
+        </a>
+        <a href="https://medium.com/@micklynch_6905" target="_blank" rel="noopener noreferrer">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6.8 7.2a.85.85 0 0 1 1.5-.55l4.7 4.4-4.7 4.4a.85.85 0 0 1-1.1-1.3l3.4-3.1-3.4-3.1a.85.85 0 0 1-.4-.75zM16.9 7a2.1 2.1 0 0 1 2.1 2v6a2.1 2.1 0 0 1-4.2 0V9a2.1 2.1 0 0 1 2.1-2z"/></svg>
+          Medium
+        </a>
+      </div>
 
-            <section id="projects" class="fade-in">
-                <h2>Projects & Contributions</h2>
-                <div class="projects-grid">
-
-                    <!-- Project Card 1: The Healthcare Agents Collective -->
-                    <article class="project-card">
-                        <img src="images/thac_image.png" alt="The Healthcare Agents Collective" class="project-image-placeholder">
-                        <h3>The Healthcare Agents Collective</h3>
-                        <p>A coordinated team of AI agents working together using Google's A2A protocol - featuring Orchestration, Triage, and FHIR agents that collaborate autonomously to deliver better patient care.</p>
-                        <a href="https://github.com/micklynch/health-agents-collective" target="_blank" rel="noopener noreferrer" class="project-link glow-hover">Link to GitHub</a>
-                    </article>
-                    
-                    <!-- Project Card 2: Hapi-MCP (Moved to Top) -->
-                    <article class="project-card">
-                        <img src="images/hapi-mcp.png" alt="..." class="project-image-placeholder"> 
-                        <h3>MCP Server for FHIR</h3>
-                        <p>I built an MCP server where a user can query the FHIR server in natural language - e.g "give me the list of patients called John Smith over age 55 taking diphenhydramine".</p>
-                        <a href="https://github.com/micklynch/hapi-mcp" target="_blank" rel="noopener noreferrer" class="project-link glow-hover">Link to GitHub</a>
-                    </article>
-
-                    <!-- Project Card 3: ReferWell (Moved to Top) -->
-                    <article class="project-card">
-                        <div class="project-video-placeholder">
-                            <iframe
-                                src="https://www.youtube.com/embed/f30TH-g13vs"
-                                frameborder="0"
-                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                allowfullscreen
-                                class="project-video">
-                            </iframe>
-                        </div>
-                        <h3>ReferWell Open Source</h3>
-                        <p>An open-source project designed to streamline the patient referral process between family doctors and specialists, improving coordination of care.</p>
-                        <a href="https://medium.com/p/b37f5a6458da" target="_blank" rel="noopener noreferrer" class="project-link glow-hover">Read on Medium</a>
-                    </article>
-
-                    <!-- Project Card 4: HospitalGPT -->
-                    <article class="project-card">
-                        <img src="images/hospitalgpt.png" alt="..." class="project-image-placeholder">
-                        <h3>HospitalGPT</h3>
-                        <p>An exploration using AI Agents (Autogen, GPT-4, Mixtral) to manage simulated patient populations, demonstrating potential AI applications in healthcare administration.</p>
-                        <a href="https://medium.com/@micklynch_6905/hospitalgpt-managing-a-patient-population-with-autogen-powered-by-gpt-4-mixtral-8x7b-ef9f54f275f1" target="_blank" rel="noopener noreferrer" class="project-link glow-hover">Read on Medium</a>
-                    </article>
-
-                    <!-- Project Card 5: FibrosisNet / COVIDNet -->
-                     <article class="project-card">
-                        <img src="images/fibrosisnet.png" alt="..." class="project-image-placeholder">
-                        <h3>AI for Medical Imaging (DarwinAI)</h3>
-                        <p>Co-developed FibrosisNet for predicting pulmonary fibrosis and led the deployment of COVIDNet for COVID-19 detection in collaboration with top pharma and hospitals like Boston Children's.</p>
-                        <a href="https://arxiv.org/abs/2103.04008" target="_blank" rel="noopener noreferrer" class="project-link glow-hover">FibrosisNet Paper</a>
-                        <!-- Add another link for COVIDNet if desired, maybe to DarwinAI's site -->
-                    </article>
-
-                     <!-- Project Card 6: Privata.ai / Patient Data Network -->
-                    <article class="project-card">
-                        <img src="images/patientdatanetwork.png" alt="..." class="project-image-placeholder">                         
-                        <h3>Privata.ai & Patient Data Network</h3>
-                        <p>Co-founded a startup building a SaaS platform for internal data breach detection, based on my open-source Patient Data Network project focused on secure patient data sharing.</p>
-                         <a href="https://medium.com/@micklynch_6905/the-patient-data-network-project-ef84a3d13781" target="_blank" rel="noopener noreferrer" class="project-link glow-hover">Patient Data Network (Medium)</a>
-                    </article>
-                    <!-- Project Card 7: Providence AI Products -->
-                    <article class="project-card">
-                        <img src="images/providence.png" alt="..." class="project-image-placeholder">
-                        <h3>AI Products at Providence</h3>
-                        <p>Led AI product initiatives impacting millions patients, focusing on reducing clinical workload and enhancing patient engagement. Drove significant user growth and operationalized product strategy.</p>
-                         <!-- No direct public link, maybe link to Providence DIG? -->
-                        <a href="https://www.providence.org/about/initiatives/innovation-and-ventures" target="_blank" rel="noopener noreferrer" class="project-link glow-hover">Learn About Providence DIG</a>
-                    </article>
-                    <!-- Project Card 8: OpenMRS SDK -->
-                    <article class="project-card">
-                      <img src="images/privataai.png" alt="..." class="project-image-placeholder">
-                        <h3>OpenMRS Java SDK</h3>
-                        <p>Developed an SDK to integrate the open-source Electronic Medical Record system OpenMRS with the Privata.ai platform, facilitating secure data interaction.</p>
-                        <a href="https://github.com/Privata-ai/privata-java-sdk" target="_blank" rel="noopener noreferrer" class="project-link glow-hover">View on GitHub</a>
-                     </article>
-
-                </div>
-            </section>
-
-             <div class="section-divider"></div>
-
-             <section id="more-info" class="fade-in">
-                 <h2>More Information</h2>
-                 <p>
-                     You can find my publications on <a href="https://scholar.google.ca/citations?user=Mgdx1_QAAAAJ" target="_blank" rel="noopener noreferrer" class="glow-hover">Google Scholar</a>,
-                     explore my code repositories on <a href="https://github.com/micklynch/" target="_blank" rel="noopener noreferrer" class="glow-hover">GitHub</a>,
-                     read my articles on <a href="https://medium.com/@micklynch_6905" target="_blank" rel="noopener noreferrer" class="glow-hover">Medium</a>,
-                     or view my full professional history on <a href="https://linkedin.com/in/michaellynchphd" target="_blank" rel="noopener noreferrer" class="glow-hover">LinkedIn</a>.
-                 </p>
-             </section>
-
-        </main>
-
-        <footer>
-            <p>&copy; <span id="current-year"></span> Michael Lynch. All Rights Reserved.</p>
-        </footer>
+      <div class="hero-cta">
+        <a class="btn primary" href="https://calendar.app.google/3s7G6jKAxhixKyAB8" target="_blank" rel="noopener noreferrer">
+          Book 30 min
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </a>
+        <a class="btn" href="#projects">See the work</a>
+      </div>
     </div>
 
-    <script>
-        // Simple script to update the year in the footer
-        document.getElementById('current-year').textContent = new Date().getFullYear();
+    <img src="images/profile.jpg" alt="Michael Lynch" class="avatar" width="148" height="148">
+  </div>
+</section>
 
-        // --- Email Obfuscation ---
-        function revealEmail() {
-            // Define email parts
-            const user = "micklynch";
-            const domain = "openmail";
-            const tld = "sh";
+<main id="main">
 
-            // Construct the email address and mailto link
-            const email = user + "@" + domain + "." + tld;
-            const mailto = "mailto:" + email;
+<!-- ============ ABOUT ============ -->
+<section class="band alt" id="about">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="num">01 — About</span>
+      <h2>Engineer by training, builder by instinct.</h2>
+    </div>
 
-            // Find the placeholder link
-            const emailLink = document.getElementById('email-link');
-            const emailSpan = emailLink ? emailLink.querySelector('span') : null;
+    <div class="prose reveal">
+      <p>
+        Hey, I'm Michael <img src="images/blob-wave.gif" class="wave" alt="👋" width="20" height="20"> —
+        I've led large-scale transformations, started a company from scratch, and stayed close enough to the
+        code to keep contributing to open source. My early graduate work was about building datasets that taught
+        computers to do human-like tasks; that foundation still shapes how I think about AI today.
+      </p>
+      <p>
+        The through-line is <strong>translation</strong>: taking something genuinely hard — a FHIR server, a
+        clinical workflow, a research model — and turning it into a product that a real person can actually use.
+        That means fewer demos that go nowhere, and more systems in production where patients feel the difference.
+      </p>
+      <p>
+        If you're working on AI, healthcare, or just want a good conversation about where the two meet,
+        <a href="https://calendar.app.google/3s7G6jKAxhixKyAB8" target="_blank" rel="noopener noreferrer">grab some time with me</a>.
+        Career details live over on <a href="https://www.linkedin.com/in/michaellynchphd" target="_blank" rel="noopener noreferrer">LinkedIn</a>.
+      </p>
+    </div>
+  </div>
+</section>
 
-            if (emailLink && emailSpan) {
-                // Update the link's href
-                emailLink.href = mailto;
-                // Update the displayed text inside the span
-                emailSpan.textContent = email;
-                // Remove the loading class for visual feedback
-                emailLink.classList.remove('loading');
-                // Optional: Add a title attribute for tooltip on hover
-                emailLink.title = "Send email to " + email;
-            }
-        }
+<!-- ============ FOCUS ============ -->
+<section class="band" id="focus">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="num">02 — Focus</span>
+      <h2>Where I spend my time</h2>
+      <p>Three overlapping problems I keep coming back to.</p>
+    </div>
 
-        // Run the revealEmail function after the page content has loaded
-        document.addEventListener('DOMContentLoaded', revealEmail);
-        // --- End Email Obfuscation ---
+    <div class="pillars">
+      <article class="pillar reveal">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M2 12h4M18 12h4M5 5l3 3M16 16l3 3M19 5l-3 3M8 16l-3 3"/><circle cx="12" cy="12" r="3.5"/></svg></div>
+        <h3>Agents that cooperate</h3>
+        <p>Multi-agent systems that reason over real clinical context — orchestration, triage, and FHIR tools wired together with open protocols.</p>
+      </article>
 
-    </script>
+      <article class="pillar reveal">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M8 2v4M16 2v4M3 10h18M9 15h6"/></svg></div>
+        <h3>Clinical data, made legible</h3>
+        <p>Interfaces and MCP servers that let care teams and patients interrogate health records in plain language instead of query syntax.</p>
+      </article>
+
+      <article class="pillar reveal">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l5-6 4 4 4-7 5 9"/><path d="M3 21h18"/></svg></div>
+        <h3>Product at scale</h3>
+        <p>Taking AI initiatives from pilot to production across large health systems — driving adoption, cutting clinical workload, and owning the roadmap.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PROJECTS ============ -->
+<section class="band alt" id="projects">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="num">03 — Work</span>
+      <h2>Projects &amp; contributions</h2>
+      <p>A mix of open source, research, and products built inside large health systems.</p>
+    </div>
+
+    <div class="projects">
+
+      <article class="project reveal">
+        <div class="thumb"><img src="images/thac_image.png" alt="The Healthcare Agents Collective" loading="lazy"></div>
+        <div class="body">
+          <div class="tags"><span class="tag">Multi-agent</span><span class="tag">A2A</span><span class="tag">FHIR</span></div>
+          <h3>The Healthcare Agents Collective</h3>
+          <p>A coordinated team of AI agents working together over Google's A2A protocol — orchestration, triage, and FHIR agents that collaborate autonomously to deliver better patient care.</p>
+          <div class="links">
+            <a href="https://github.com/micklynch/health-agents-collective" target="_blank" rel="noopener noreferrer">GitHub</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="project reveal">
+        <div class="thumb"><img src="images/hapi-mcp.png" alt="MCP server for FHIR" loading="lazy"></div>
+        <div class="body">
+          <div class="tags"><span class="tag">MCP</span><span class="tag">FHIR</span><span class="tag">NLP</span></div>
+          <h3>MCP Server for FHIR</h3>
+          <p>Query a FHIR server in plain language — e.g. "give me the list of patients called John Smith over age 55 taking diphenhydramine".</p>
+          <div class="links">
+            <a href="https://github.com/micklynch/hapi-mcp" target="_blank" rel="noopener noreferrer">GitHub</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="project reveal">
+        <div class="thumb">
+          <iframe src="https://www.youtube.com/embed/f30TH-g13vs" title="ReferWell demo" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+        <div class="body">
+          <div class="tags"><span class="tag">Open source</span><span class="tag">Care coordination</span></div>
+          <h3>ReferWell</h3>
+          <p>An open-source project that streamlines patient referrals between family doctors and specialists, improving coordination of care.</p>
+          <div class="links">
+            <a href="https://medium.com/p/b37f5a6458da" target="_blank" rel="noopener noreferrer">Read on Medium</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="project reveal">
+        <div class="thumb"><img src="images/hospitalgpt.png" alt="HospitalGPT" loading="lazy"></div>
+        <div class="body">
+          <div class="tags"><span class="tag">Agents</span><span class="tag">Simulation</span></div>
+          <h3>HospitalGPT</h3>
+          <p>An exploration using AI agents (AutoGen, GPT-4, Mixtral) to manage simulated patient populations, demonstrating what AI could do for healthcare administration.</p>
+          <div class="links">
+            <a href="https://medium.com/@micklynch_6905/hospitalgpt-managing-a-patient-population-with-autogen-powered-by-gpt-4-mixtral-8x7b-ef9f54f275f1" target="_blank" rel="noopener noreferrer">Read on Medium</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="project reveal">
+        <div class="thumb"><img src="images/fibrosisnet.png" alt="AI for medical imaging" loading="lazy"></div>
+        <div class="body">
+          <div class="tags"><span class="tag">Research</span><span class="tag">Computer vision</span></div>
+          <h3>AI for Medical Imaging</h3>
+          <p>Co-developed FibrosisNet for predicting pulmonary fibrosis, and led deployment of COVIDNet for COVID-19 detection with top pharma and hospitals including Boston Children's.</p>
+          <div class="links">
+            <a href="https://arxiv.org/abs/2103.04008" target="_blank" rel="noopener noreferrer">FibrosisNet paper</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="project reveal">
+        <div class="thumb"><img src="images/patientdatanetwork.png" alt="Patient Data Network" loading="lazy"></div>
+        <div class="body">
+          <div class="tags"><span class="tag">Startup</span><span class="tag">Privacy</span></div>
+          <h3>Privata.ai &amp; Patient Data Network</h3>
+          <p>Co-founded a startup building a SaaS platform for internal data breach detection, based on my open-source Patient Data Network for secure patient data sharing.</p>
+          <div class="links">
+            <a href="https://medium.com/@micklynch_6905/the-patient-data-network-project-ef84a3d13781" target="_blank" rel="noopener noreferrer">Patient Data Network</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="project reveal">
+        <div class="thumb"><img src="images/providence.png" alt="AI products at Providence" loading="lazy"></div>
+        <div class="body">
+          <div class="tags"><span class="tag">Health system</span><span class="tag">Product strategy</span></div>
+          <h3>AI Products at Providence</h3>
+          <p>Led AI product initiatives impacting millions of patients — reducing clinical workload and enhancing patient engagement, driving significant user growth and operationalizing product strategy.</p>
+          <div class="links">
+            <a href="https://www.providence.org/about/initiatives/innovation-and-ventures" target="_blank" rel="noopener noreferrer">Providence Innovation</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="project reveal">
+        <div class="thumb"><img src="images/privataai.png" alt="OpenMRS Java SDK" loading="lazy"></div>
+        <div class="body">
+          <div class="tags"><span class="tag">Java</span><span class="tag">SDK</span><span class="tag">EMR</span></div>
+          <h3>OpenMRS Java SDK</h3>
+          <p>Developed an SDK integrating the open-source OpenMRS electronic medical record with the Privata.ai platform, facilitating secure data interaction.</p>
+          <div class="links">
+            <a href="https://github.com/Privata-ai/privata-java-sdk" target="_blank" rel="noopener noreferrer">View on GitHub</a>
+          </div>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============ ELSEWHERE ============ -->
+<section class="band" id="elsewhere">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="num">04 — Elsewhere</span>
+      <h2>Find me around the web</h2>
+      <p>Publications, code, writing, and the professional timeline.</p>
+    </div>
+
+    <div class="linkgrid reveal">
+      <a class="linkcard" href="https://scholar.google.ca/citations?user=Mgdx1_QAAAAJ" target="_blank" rel="noopener noreferrer">
+        <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M22 9 12 4 2 9l10 5 10-5zM6 11.5V17c0 1.7 2.7 3 6 3s6-1.3 6-3v-5.5"/></svg></span>
+        <span><b>Google Scholar</b><small>Publications</small></span>
+      </a>
+      <a class="linkcard" href="https://github.com/micklynch" target="_blank" rel="noopener noreferrer">
+        <span class="ico"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.4c.58.1.79-.25.79-.56v-2.2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.34-1.29-1.7-1.29-1.7-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.7 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.79 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.43-2.69 5.4-5.25 5.69.41.36.78 1.06.78 2.14v3.17c0 .31.2.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg></span>
+        <span><b>GitHub</b><small>Code &amp; open source</small></span>
+      </a>
+      <a class="linkcard" href="https://medium.com/@micklynch_6905" target="_blank" rel="noopener noreferrer">
+        <span class="ico"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6.8 7.2a.85.85 0 0 1 1.5-.55l4.7 4.4-4.7 4.4a.85.85 0 0 1-1.1-1.3l3.4-3.1-3.4-3.1a.85.85 0 0 1-.4-.75zM16.9 7a2.1 2.1 0 0 1 2.1 2v6a2.1 2.1 0 0 1-4.2 0V9a2.1 2.1 0 0 1 2.1-2z"/></svg></span>
+        <span><b>Medium</b><small>Writing</small></span>
+      </a>
+      <a class="linkcard" href="https://www.linkedin.com/in/michaellynchphd" target="_blank" rel="noopener noreferrer">
+        <span class="ico"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9h4v12H3zM9 9h3.8v1.7h.05c.53-1 1.83-2.05 3.77-2.05C20.3 8.65 21 11 21 14.1V21h-4v-6.1c0-1.45-.03-3.3-2.02-3.3-2.02 0-2.33 1.57-2.33 3.2V21H9z"/></svg></span>
+        <span><b>LinkedIn</b><small>Professional history</small></span>
+      </a>
+      <a class="linkcard" href="https://calendar.app.google/3s7G6jKAxhixKyAB8" target="_blank" rel="noopener noreferrer">
+        <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 11h18"/></svg></span>
+        <span><b>Book 30 min</b><small>Google Calendar</small></span>
+      </a>
+      <a class="linkcard" href="heart.html">
+        <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 5.6a5.5 5.5 0 0 0-7.8 0L12 6.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l8.8 8.8 8.8-8.8a5.5 5.5 0 0 0 0-7.8z"/></svg></span>
+        <span><b>Easter egg</b><small>Beating heart</small></span>
+      </a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ============ CONTACT / FOOTER ============ -->
+<footer class="site" id="contact">
+  <div class="wrap">
+    <p>© <span id="year"></span> Michael Lynch. BEng, PhD — Toronto, Canada.</p>
+    <div class="f-links">
+      <a href="#" id="email-link" aria-label="Show email address"><span id="email-text">Show email</span></a>
+      <a href="tel:+16479148723">647-914-8723</a>
+      <a href="https://github.com/micklynch" target="_blank" rel="noopener noreferrer">GitHub</a>
+      <a href="https://www.linkedin.com/in/michaellynchphd" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+    </div>
+  </div>
+</footer>
+
+<script src="main.js"></script>
 </body>
 </html>
-
