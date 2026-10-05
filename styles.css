@@ -140,8 +140,11 @@ nav.links a:hover { color: var(--ink); border-bottom-color: var(--accent); }
     display: grid; grid-template-columns: 1fr auto; gap: 3rem; align-items: start;
 }
 @media (max-width: 780px) {
-    .hero { padding: 3rem 0 2.5rem; }
-    .hero-grid { grid-template-columns: 1fr; gap: 2rem; }
+    .hero { padding: 2.5rem 0 2.5rem; }
+    /* Single column, but the avatar is the *second* DOM child so it would
+       otherwise stack below all the copy. Pull it to the top and centre it. */
+    .hero-grid { grid-template-columns: 1fr; gap: 1.5rem; }
+    .hero-grid > .avatar { order: -1; justify-self: center; }
 }
 
 .eyebrow {
