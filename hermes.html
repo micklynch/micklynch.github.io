@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hermes Personal Assistant</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400;1,6..72,500&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+  .legal-main { padding: 4rem 0 5rem; }
+  .legal-main h1 { font-family: var(--font-serif, Newsreader, Georgia, serif); font-size: 2.4rem; line-height: 1.1; margin: 0 0 .5rem; }
+  .legal-main .lede { color: var(--muted, #5b6570); font-size: 1.05rem; margin: 0 0 2.5rem; }
+  .fills { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 1rem; margin: 2rem 0 3rem; }
+  .fill { border: 1px solid var(--border, #e3e6ea); border-radius: 12px; padding: 1.1rem 1.2rem; }
+  .fill h3 { margin: 0 0 .25rem; font-size: 1rem; }
+  .fill p { margin: 0; font-size: .9rem; color: var(--muted, #5b6570); }
+  .links-row a { margin-right: 1.25rem; }
+</style>
+</head>
+<body>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site">
+  <div class="wrap">
+    <a class="nav-brand" href="index.html">Michael Lynch <span>/ Toronto</span></a>
+    <nav class="links" aria-label="Primary">
+      <a href="index.html#about">About</a>
+      <a href="index.html#projects">Work</a>
+      <a href="privacy.html">Privacy</a>
+      <a href="terms.html">Terms</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main" class="legal-main">
+  <div class="wrap">
+    <h1>Hermes Personal Assistant</h1>
+    <p class="lede">
+      A private, self-hosted personal assistant application that manages email, calendar,
+      documents, and task automation for a single user, the owner-operator.
+    </p>
+
+    <div class="fills">
+      <div class="fill">
+        <h3>Who it's for</h3>
+        <p>Single user. The application only ever accesses the account of the person who runs it.</p>
+      </div>
+      <div class="fill">
+        <h3>What it does</h3>
+        <p>Reads &amp; sends email, manages calendar events, and touches Drive/Docs/Sheets to automate the owner's workflows.</p>
+      </div>
+      <div class="fill">
+        <h3>Data handling</h3>
+        <p>No selling, no sharing, no ads. Data stays within the owner's own devices and accounts.</p>
+      </div>
+    </div>
+
+    <p class="links-row">
+      <a href="privacy.html">Privacy Policy</a>
+      <a href="terms.html">Terms of Service</a>
+      <a href="https://github.com/micklynch" target="_blank" rel="noopener noreferrer">Developer: Michael Lynch</a>
+    </p>
+  </div>
+</main>
+
+<footer class="site-foot" style="padding:2rem 0;border-top:1px solid var(--border,#e3e6ea);">
+  <div class="wrap" style="color:var(--muted,#5b6570);font-size:.85rem;">
+    © 2026 Michael Lynch. Privacy / Terms. Contact: micheal.o.loinsigh@gmail.com
+  </div>
+</footer>
+
+</body>
+</html>
