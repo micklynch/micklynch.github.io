@@ -18,25 +18,4 @@
             link.href = 'mailto:' + email;
         });
     }
-
-    // Scroll reveal
-    var items = document.querySelectorAll('.reveal');
-    var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-    if (reduced || !('IntersectionObserver' in window)) {
-        items.forEach(function (el) { el.classList.add('in'); });
-        return;
-    }
-
-    var io = new IntersectionObserver(function (entries) {
-        entries.forEach(function (entry, i) {
-            if (!entry.isIntersecting) return;
-            var el = entry.target;
-            // Stagger siblings slightly so cards cascade in.
-            setTimeout(function () { el.classList.add('in'); }, i * 60);
-            io.unobserve(el);
-        });
-    }, { rootMargin: '0px 0px -8% 0px', threshold: 0.1 });
-
-    items.forEach(function (el) { io.observe(el); });
 })();
